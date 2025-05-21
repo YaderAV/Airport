@@ -4,9 +4,10 @@
  */
 package Main;
 
+import airport.views.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.UIManager;
-import airport.views.AirportFrame;
+
 /**
  *
  * @author yader
@@ -26,5 +27,5 @@ public class Main {
                 new AirportFrame().setVisible(true);
             }
         });
-    }
+}
 }

@@ -4,17 +4,17 @@
  */
 package airport.Models;
 
-import airport.Models.Flight;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import org.json.JSONObject;
 
 /**
  *
  * @author edangulo
  */
 public class Passenger {
-    
+
     private final long id;
     private String firstname;
     private String lastname;
@@ -35,10 +35,34 @@ public class Passenger {
         this.flights = new ArrayList<>();
     }
 
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("firstname", firstname);
+        obj.put("lastname", lastname);
+        obj.put("birthDate", birthDate);
+        obj.put("countryPhoneCode", countryPhoneCode);
+        obj.put("phone", phone);
+        obj.put("country", country);
+        return obj;
+    }
+    
+    public static Passenger fromJSON(JSONObject obj){
+        return new Passenger(
+        obj.getLong("id"),
+        obj.getString("firstname"),
+        obj.getString("lastname"),
+        LocalDate.parse(obj.getString("birthDate")),
+        obj.getInt("countryPhoneCode"),
+        obj.getLong("phone"),
+        obj.getString("country")
+        );
+    }
+    
     public void addFlight(Flight flight) {
         this.flights.add(flight);
     }
-    
+
     public long getId() {
         return id;
     }
@@ -94,21 +118,21 @@ public class Passenger {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
     public String getFullname() {
         return firstname + " " + lastname;
     }
-    
+
     public String generateFullPhone() {
         return "+" + countryPhoneCode + " " + phone;
     }
-    
+
     public int calculateAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
-    
+
     public int getNumFlights() {
         return flights.size();
     }
-    
+
 }

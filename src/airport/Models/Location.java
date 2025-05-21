@@ -4,6 +4,8 @@
  */
 package airport.Models;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author edangulo
@@ -25,6 +27,30 @@ public class Location {
         this.airportLatitude = airportLatitude;
         this.airportLongitude = airportLongitude;
     }
+    
+
+public JSONObject toJSON() {
+    JSONObject obj = new JSONObject();
+    obj.put("airportId", airportId);
+    obj.put("airportName", airportName);
+    obj.put("airportCity", airportCity);
+    obj.put("airportCountry", airportCountry);
+    obj.put("airportLatitude", airportLatitude);
+    obj.put("airportLongitude", airportLongitude);
+    return obj;
+}
+
+public static Location fromJSON(JSONObject obj) {
+    return new Location(
+        obj.getString("airportId"),
+        obj.getString("airportName"),
+        obj.getString("airportCity"),
+        obj.getString("airportCountry"),
+        obj.getDouble("airportLatitude"),
+        obj.getDouble("airportLongitude")
+    );
+}
+
 
     public String getAirportId() {
         return airportId;

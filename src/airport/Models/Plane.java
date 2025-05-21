@@ -4,8 +4,8 @@
  */
 package airport.Models;
 
-import airport.Models.Flight;
 import java.util.ArrayList;
+import org.json.JSONObject;
 
 /**
  *
@@ -28,6 +28,27 @@ public class Plane {
         this.airline = airline;
         this.flights = new ArrayList<>();
     }
+    
+public JSONObject toJSON() {
+    JSONObject obj = new JSONObject();
+    obj.put("id", id);
+    obj.put("brand", brand);
+    obj.put("model", model);
+    obj.put("maxCapacity", maxCapacity);
+    obj.put("airline", airline);
+    return obj;
+}
+
+public static Plane fromJSON(JSONObject obj) {
+    return new Plane(
+        obj.getString("id"),
+        obj.getString("brand"),
+        obj.getString("model"),
+        obj.getInt("maxCapacity"),
+        obj.getString("airline")
+    );
+}
+
 
     public void addFlight(Flight flight) {
         this.flights.add(flight);

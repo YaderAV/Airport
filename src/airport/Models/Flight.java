@@ -54,6 +54,10 @@ public class Flight {
         
         this.plane.addFlight(this);
     }
+    public ArrayList<Passenger> getPassengers() {
+    return new ArrayList<>(passengers); // Devuelve una copia de la lista original
+}
+
     
     public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
