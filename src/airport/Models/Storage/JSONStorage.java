@@ -109,6 +109,13 @@ public class JSONStorage implements IStorage {
             Plane plane = planeMap.get(o.getString("planeId"));
             Location departure = locationMap.get(o.getString("departureId"));
             Location arrival = locationMap.get(o.getString("arrivalId"));
+            if (o.has("scaleLocation")) {
+                for (Location l : locations) {
+                    if (l.getAirportId().equals(o.getString("scaleLocation"))) {
+                       
+                    }
+                }
+            }
             Location scale = o.has("scaleId") ? locationMap.get(o.getString("scaleId")) : null;
             LocalDateTime date = LocalDateTime.parse(o.getString("departureDate"));
 
