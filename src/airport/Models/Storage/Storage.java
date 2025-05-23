@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author yader
  */
-public interface IStorage {
+public interface Storage {
     ArrayList<Location> loadLocations();
     ArrayList<Passenger> loadPassengers();
     ArrayList<Plane> loadPlanes();

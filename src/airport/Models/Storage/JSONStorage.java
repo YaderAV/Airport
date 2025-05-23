@@ -23,7 +23,7 @@ import org.json.JSONObject;
  *
  * @author yader
  */
-public class JSONStorage implements IStorage {
+public class JSONStorage implements Storage {
 
     private final String locationsPath;
     private final String passengersPath;
@@ -109,14 +109,15 @@ public class JSONStorage implements IStorage {
             Plane plane = planeMap.get(o.getString("planeId"));
             Location departure = locationMap.get(o.getString("departureId"));
             Location arrival = locationMap.get(o.getString("arrivalId"));
+            Location scale = null;
             if (o.has("scaleLocation")) {
-                for (Location l : locations) {
-                    if (l.getAirportId().equals(o.getString("scaleLocation"))) {
-                       
+                for (Location location : locations) {
+                    if (location.getAirportId().equals(o.getString("scaleLocation"))) {
+                       scale = location;
                     }
                 }
             }
-            Location scale = o.has("scaleId") ? locationMap.get(o.getString("scaleId")) : null;
+            
             LocalDateTime date = LocalDateTime.parse(o.getString("departureDate"));
 
             Flight f;
