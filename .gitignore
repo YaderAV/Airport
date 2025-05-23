@@ -1,2 +1,33 @@
+# Compilados y binarios
 /build/
 /dist/
+/out/
+*.class
+
+# Archivos de NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/nbactions.xml
+/.nb-gradle/
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de log o temporales
+*.log
+*.tmp
+*.bak
+
+# Librerías externas (si se regeneran o están en gitignore del equipo)
+/lib/*.jar
+
+# Archivos de configuración de usuario
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# Git
+*.orig
