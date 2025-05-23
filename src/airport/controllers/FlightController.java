@@ -6,13 +6,13 @@ package airport.controllers;
 
 import airport.Models.Flight;
 import airport.Models.Location;
+import airport.Models.Observable.FlightRepository;
 import airport.Models.Passenger;
 import airport.Models.Plane;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import airport.Models.Storage.Storage;
 
 /**
@@ -21,16 +21,18 @@ import airport.Models.Storage.Storage;
  */
 public class FlightController {
     private final ArrayList<Flight> flights; 
-    private final Storage storage;  
+    private final Storage storage; 
+    private final FlightRepository repository;
 
-    public FlightController(ArrayList<Location>locations, ArrayList<Plane> planes,ArrayList<Passenger> passengers, Storage storage) {
+    public FlightController(ArrayList<Location>locations, ArrayList<Plane> planes,ArrayList<Passenger> passengers, Storage storage, FlightRepository repository) {
         this.storage = storage;
         this.flights = storage.loadFlights(locations, passengers, planes);
+        this.repository = repository;
     }
     
     
     public Response createFlight(String id, Plane plane, Location departureLocation, Location scaleLocation, Location arrivalLocation, LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival, int hoursDurationScale, int minutesDurationScale){
-        
+            
             for (Flight f : flights) {
                 if(f.getId().equals(id)){
                     return new Response("Ya existe un vuelo con este ID",Status.BAD_REQUEST);
@@ -45,6 +47,7 @@ public class FlightController {
                }
                flights.add(f);
                storage.saveFlights(flights);
+               repository.addFlight(f);
                return new Response("El vuelo ha sido creado exitosamente", Status.CREATED);
                
         } catch (Exception e) {
