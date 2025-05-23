@@ -5,24 +5,21 @@
 package airport.Models.Observable;
 
 import java.util.ArrayList;
-
+import airport.Models.Observable.DataObserver;
 /**
  *
  * @author yader
  */
-public abstract class Observable {
-    private final ArrayList<Observer> observers = new ArrayList<>();
-    
-    public void addObserver(Observer o){
+public abstract class ObservableBase {
+   
+    private final ArrayList<DataObserver> observers = new  ArrayList();
+    public void addObserver(DataObserver o) {
     observers.add(o);
     }
-    public void removeObserver(Observer o){
-    observers.remove(o);
-    }
     public void notifyObservers(){
-    for(Observer o : observers){
-        o.update();
+        for(DataObserver o : observers ){
+        o.onDataChanged();
+        }
+        
     }
-    }
-    
 }

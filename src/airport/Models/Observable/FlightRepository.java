@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author yader
  */
-public class FlightRepository extends Observable {
+public class FlightRepository extends ObservableBase {
 
     private final ArrayList<Flight> flights = new ArrayList();
 

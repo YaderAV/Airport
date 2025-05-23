@@ -93,6 +93,7 @@ public class AirportFrame extends javax.swing.JFrame {
             delayMinute.addItem("" + i);
         }
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -8,6 +8,6 @@ package airport.Models.Observable;
  *
  * @author yader
  */
-public interface Observer {
-    void update();
+public interface DataObserver {
+    void onDataChanged();
 }

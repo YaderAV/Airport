@@ -20,7 +20,7 @@ public class PlaneValidator implements Validator<Plane>{
             result.addError("formato ID del avion debe ser XXYYYYY. X letra mayúscula y Y dígitos");
         if(plane.getBrand()== null || plane.getBrand().isBlank()) result.addError("Marca vacía");
         if(plane.getModel()== null || plane.getModel().isBlank()) result.addError("Modelo vacío");
-        if (plane.getMaxCapacity()<0) result.addError("capacidad máxima inválida");
+        if (plane.getMaxCapacity()<=0) result.addError("capacidad máxima inválida");
         if(plane.getAirline()== null || plane.getAirline().isBlank()) result.addError("Aerolínea vacía");
         return result;
     }
