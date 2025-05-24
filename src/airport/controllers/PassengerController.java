@@ -4,12 +4,12 @@
  */
 package airport.controllers;
 
+import airport.controllers.service.PassengerRegistrationService;
+import airport.controllers.service.PassengerUpdateService;
 import airport.Models.Passenger;
 import airport.Models.Storage.Storage;
-import airport.controllers.utils.PassengerValidator;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import airport.controllers.utils.ValidationResult;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,52 +30,22 @@ public class PassengerController {
 
     public Response registerPassenger(Long id, String name, String lastname, LocalDate birthDate, int phoneCode, long phone, String country) {
         try {
-           
-
-            Passenger p = new Passenger(id, name, lastname, birthDate, phoneCode, phone, country);
-            PassengerValidator validator = new PassengerValidator();
-            ValidationResult validation = validator.validate(p);
-
-            if (!validation.isValid()) {
-                return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
-            }
-            boolean idRepetido = false;
-            for (Passenger pass : passengers){
-                if(pass.getId()== p.getId()){
-                    idRepetido = true;
-                    break;
-                }
-            }
-            if(idRepetido){
-                return new Response ("El ID del pasajero ya está registrado",Status.BAD_REQUEST);
-            }
-            passengers.add(p);
-            storage.savePassengers(passengers);
-            return new Response("Pasajero registrado correctamente", Status.CREATED, p);
+            Passenger passenger = new Passenger(id, name, lastname, birthDate, phoneCode, phone, country);
+            PassengerRegistrationService service = new PassengerRegistrationService(passengers, storage);
+            return service.register(passenger);
+            
         } catch (Exception e) {
             return new Response("Error al registrar pasajero: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate,
-            int phoneCode, long phone, String country) {
+    public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate, int phoneCode, long phone, String country) {
         Passenger passenger = passengers.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
         if (passenger == null) {
             return new Response("Pasajero no encontrado.", Status.NOT_FOUND);
         }
-
-        try {
-            passenger.setFirstname(name);
-            passenger.setLastname(lastName);
-            passenger.setBirthDate(birthDate);
-            passenger.setCountryPhoneCode(phoneCode);
-            passenger.setPhone(phone);
-            passenger.setCountry(country);
-            storage.savePassengers(passengers);
-            return new Response("Pasajero actualizado exitosamente.", Status.OK, passenger);
-        } catch (Exception e) {
-            return new Response("Error al actualizar pasajero: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
-        }
+        PassengerUpdateService service = new PassengerUpdateService(passengers, storage);
+        return service.update(id, name, lastName, birthDate, phoneCode, phone, country);
     }
 
     public Response getPassengerById(long id) {

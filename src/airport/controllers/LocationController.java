@@ -4,13 +4,12 @@
  */
 package airport.controllers;
 
+import airport.controllers.service.LocationCreationService;
 import airport.Models.Location;
 import airport.Models.Observable.ObservableBase;
 import airport.Models.Storage.Storage;
-import airport.controllers.utils.LocationValidator;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import airport.controllers.utils.ValidationResult;
 import java.util.ArrayList;
 
 /**
@@ -18,34 +17,27 @@ import java.util.ArrayList;
  * @author yader
  */
 public class LocationController extends ObservableBase {
-   private final ArrayList<Location> locations; 
-   private final Storage storage; 
+  private final ArrayList<Location> locations;
+  private final Storage storage;
 
-    public LocationController(ArrayList locations, Storage storage) {
+    public LocationController(ArrayList<Location> locations, Storage storage) {
         this.locations = locations;
         this.storage = storage;
     }
-   
-   public Response createLocation(String airportId, String airportName, String airportCity, String airportCountry, double airportLatitude, double airportLongitude){
-       LocationValidator locationValidator = new LocationValidator();
-       Location location = new Location(airportId, airportName, airportCity, airportCountry, airportLatitude, airportLongitude);
-       ValidationResult locValidation = locationValidator.validate(location);
-       if(!locValidation.isValid()){
-           return new Response (locValidation.getCombinedMessage(), Status.BAD_REQUEST);
-       }
-       boolean idRepetido = false;
-            for (Location l : locations){
-                if(l.getAirportId()== location.getAirportId()){
-                    idRepetido = true;
-                    break;
-                }
+
+    public Response createLocation(String airportId, String airportName, String airportCity, String airportCountry, double airportLatitude, double airportLongitude) {
+        try {
+            Location location = new Location(airportId, airportName, airportCity, airportCountry, airportLatitude, airportLongitude);
+            LocationCreationService service = new LocationCreationService(locations, storage);
+            Response response = service.create(location);
+
+            if (response.getStatus() == Status.CREATED) {
+                notifyObservers(); 
             }
-            if(idRepetido){
-                return new Response ("El ID del aeropuerto ya está registrado",Status.BAD_REQUEST);
-            }
-            locations.add(location);
-            storage.saveLocations(locations);
-            notifyObservers();
-            return new Response ("Localizacion registrada correctamente", Status.CREATED);
-   }
+
+            return response;
+        } catch (Exception e) {
+            return new Response("Error al registrar localización: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

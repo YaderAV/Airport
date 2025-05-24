@@ -12,10 +12,12 @@ import airport.controllers.FlightController;
 import airport.controllers.LocationController;
 import airport.controllers.PassengerController;
 import airport.controllers.PlaneController;
+import airport.controllers.utils.Parsers;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -1438,113 +1440,133 @@ public class AirportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-        // TODO add your handling code here:
-        long id = Long.parseLong(fieldIDpassenger.getText());
+        try {
+        long id = Parsers.LONG.parse(fieldIDpassenger.getText());
         String firstname = fieldFirstName.getText();
         String lastname = fieldLastName.getText();
-        int year = Integer.parseInt(fieldYear.getText());
-        int month = Integer.parseInt(monthPassengerR.getItemAt(monthPassengerR.getSelectedIndex()));
-        int day = Integer.parseInt(monthPassengerR.getItemAt(dayPassengerR.getSelectedIndex()));
-        int phoneCode = Integer.parseInt(fieldPreFix.getText());
-        long phone = Long.parseLong(fieldPhone.getText());
+        int year = Parsers.INTEGER.parse(fieldYear.getText());
+        int month = Parsers.INTEGER.parse(monthPassengerR.getItemAt(monthPassengerR.getSelectedIndex()));
+        int day = Parsers.INTEGER.parse(dayPassengerR.getItemAt(dayPassengerR.getSelectedIndex()));
+        int phoneCode = Parsers.INTEGER.parse(fieldPreFix.getText());
+        long phone = Parsers.LONG.parse(fieldPhone.getText());
         String country = fieldCountry.getText();
-
         LocalDate birthDate = LocalDate.of(year, month, day);
-
         this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
         this.userSelect.addItem("" + id);
+          } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al registrar pasajero: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btRegisterActionPerformed
 
     private void fieldCreateAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldCreateAirplaneActionPerformed
-        // TODO add your handling code here:
+        try {
         String id = fieldIDairplane.getText();
         String brand = fieldBrand.getText();
         String model = fieldModel.getText();
-        int maxCapacity = Integer.parseInt(fieldMaxCapacity.getText());
+        int maxCapacity = Parsers.INTEGER.parse(fieldMaxCapacity.getText());
         String airline = fieldAirline.getText();
 
         this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
 
         this.planeFlightR.addItem(id);
+        } catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Error en los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
     }//GEN-LAST:event_fieldCreateAirplaneActionPerformed
 
     private void btCreateLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateLocationActionPerformed
         // TODO add your handling code here:
-        String id = fieldAirportID.getText();
-        String name = fieldAirportName.getText();
-        String city = fieldAirportCity.getText();
-        String country = fieldAirportCountry.getText();
-        double latitude = Double.parseDouble(fieldAirportLatitude.getText());
-        double longitude = Double.parseDouble(fieldAirportLongitude.getText());
+       try {
+            String id = fieldAirportID.getText();
+            String name = fieldAirportName.getText();
+            String city = fieldAirportCity.getText();
+            String country = fieldAirportCountry.getText();
+            double latitude = Parsers.DOUBLE.parse(fieldAirportLatitude.getText());
+            double longitude = Parsers.DOUBLE.parse(fieldAirportLongitude.getText());
 
-        this.locations.add(new Location(id, name, city, country, latitude, longitude));
+            this.locations.add(new Location(id, name, city, country, latitude, longitude));
 
-        this.locationDeparture.addItem(id);
-        this.locationArrival.addItem(id);
-        this.locationScale.addItem(id);
+            this.locationDeparture.addItem(id);
+            this.locationArrival.addItem(id);
+            this.locationScale.addItem(id);
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Error en los datos del aeropuerto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
+
     }//GEN-LAST:event_btCreateLocationActionPerformed
 
     private void btCreateFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateFlightActionPerformed
         // TODO add your handling code here:
+    try {    
         String id = fieldIDflight.getText();
         String planeId = planeFlightR.getItemAt(planeFlightR.getSelectedIndex());
         String departureLocationId = locationDeparture.getItemAt(locationDeparture.getSelectedIndex());
         String arrivalLocationId = locationArrival.getItemAt(locationArrival.getSelectedIndex());
         String scaleLocationId = locationScale.getItemAt(locationScale.getSelectedIndex());
-        int year = Integer.parseInt(departureYear.getText());
-        int month = Integer.parseInt(departureMonth.getItemAt(departureMonth.getSelectedIndex()));
-        int day = Integer.parseInt(departureDay.getItemAt(departureDay.getSelectedIndex()));
-        int hour = Integer.parseInt(departureMonth.getItemAt(departureMonth.getSelectedIndex()));
-        int minutes = Integer.parseInt(departureMinute.getItemAt(departureMinute.getSelectedIndex()));
-        int hoursDurationsArrival = Integer.parseInt(arrivalHour.getItemAt(arrivalHour.getSelectedIndex()));
-        int minutesDurationsArrival = Integer.parseInt(arrivalMinute.getItemAt(arrivalMinute.getSelectedIndex()));
-        int hoursDurationsScale = Integer.parseInt(scaleHour.getItemAt(scaleHour.getSelectedIndex()));
-        int minutesDurationsScale = Integer.parseInt(scaleMinute.getItemAt(scaleMinute.getSelectedIndex()));
+
+        int year = Parsers.INTEGER.parse(departureYear.getText());
+        int month = Parsers.INTEGER.parse(departureMonth.getItemAt(departureMonth.getSelectedIndex()));
+        int day = Parsers.INTEGER.parse(departureDay.getItemAt(departureDay.getSelectedIndex()));
+        int hour = Parsers.INTEGER.parse(departureHour.getItemAt(departureHour.getSelectedIndex()));
+        int minutes = Parsers.INTEGER.parse(departureMinute.getItemAt(departureMinute.getSelectedIndex()));
+
+        int hoursDurationsArrival = Parsers.INTEGER.parse(arrivalHour.getItemAt(arrivalHour.getSelectedIndex()));
+        int minutesDurationsArrival = Parsers.INTEGER.parse(arrivalMinute.getItemAt(arrivalMinute.getSelectedIndex()));
+        int hoursDurationsScale = Parsers.INTEGER.parse(scaleHour.getItemAt(scaleHour.getSelectedIndex()));
+        int minutesDurationsScale = Parsers.INTEGER.parse(scaleMinute.getItemAt(scaleMinute.getSelectedIndex()));
 
         LocalDateTime departureDate = LocalDateTime.of(year, month, day, hour, minutes);
 
-        Plane plane = null;
-        for (Plane p : this.planes) {
-            if (planeId.equals(p.getId())) {
-                plane = p;
-            }
-        }
 
-        Location departure = null;
-        Location arrival = null;
-        Location scale = null;
-        for (Location location : this.locations) {
-            if (departureLocationId.equals(location.getAirportId())) {
-                departure = location;
+            Plane plane = null;
+            for (Plane p : this.planes) {
+                if (planeId.equals(p.getId())) {
+                    plane = p;
+                }
             }
-            if (arrivalLocationId.equals(location.getAirportId())) {
-                arrival = location;
-            }
-            if (scaleLocationId.equals(location.getAirportId())) {
-                scale = location;
-            }
-        }
 
-        if (scale == null) {
-            this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival));
-        } else {
-            this.flights.add(new Flight(id, plane, departure, scale, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale));
-        }
+            Location departure = null;
+            Location arrival = null;
+            Location scale = null;
+            for (Location location : this.locations) {
+                if (departureLocationId.equals(location.getAirportId())) {
+                    departure = location;
+                }
+                if (arrivalLocationId.equals(location.getAirportId())) {
+                    arrival = location;
+                }
+                if (scaleLocationId.equals(location.getAirportId())) {
+                    scale = location;
+                }
+            }
 
-        this.addFlightB.addItem(id);
+            if (scale == null) {
+                this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival));
+            } else {
+                this.flights.add(new Flight(id, plane, departure, scale, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale));
+            }
+
+            this.addFlightB.addItem(id);
+            
+           } catch (Exception e) {
+    JOptionPane.showMessageDialog(this, "Error en los datos del vuelo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+} 
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
         // TODO add your handling code here:
-        long id = Long.parseLong(fieldIDupdate.getText());
+       try {    
+        long id = Parsers.LONG.parse(fieldIDupdate.getText());
         String firstname = fieldFirstNameUpdate.getText();
         String lastname = fieldLastNameUpdate.getText();
-        int year = Integer.parseInt(fieldYearUpdate.getText());
-        int month = Integer.parseInt(monthPassengerR.getItemAt(monthUpdate.getSelectedIndex()));
-        int day = Integer.parseInt(dayPassengerR.getItemAt(dayUpdate.getSelectedIndex()));
-        int phoneCode = Integer.parseInt(fieldPrefixUpdate.getText());
-        long phone = Long.parseLong(fieldPhoneUpdate.getText());
+        int year = Parsers.INTEGER.parse(fieldYearUpdate.getText());
+        int month = Parsers.INTEGER.parse(monthPassengerR.getItemAt(monthUpdate.getSelectedIndex()));
+        int day = Parsers.INTEGER.parse(dayPassengerR.getItemAt(dayUpdate.getSelectedIndex()));
+        int phoneCode = Parsers.INTEGER.parse(fieldPrefixUpdate.getText());
+        long phone = Parsers.LONG.parse(fieldPhoneUpdate.getText());
         String country = fieldCountryUpdate.getText();
+
 
         LocalDate birthDate = LocalDate.of(year, month, day);
 
@@ -1561,11 +1583,16 @@ public class AirportFrame extends javax.swing.JFrame {
         passenger.setCountryPhoneCode(phoneCode);
         passenger.setPhone(phone);
         passenger.setCountry(country);
+        
+        
+      } catch (Exception e) {
+      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}   
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
-        // TODO add your handling code here:
-        long passengerId = Long.parseLong(fieldIDaddTFlight.getText());
+        try {    
+        long passengerId = Parsers.LONG.parse(fieldIDaddTFlight.getText());
         String flightId = addFlightB.getItemAt(addFlightB.getSelectedIndex());
 
         Passenger passenger = null;
@@ -1585,13 +1612,17 @@ public class AirportFrame extends javax.swing.JFrame {
 
         passenger.addFlight(flight);
         flight.addPassenger(passenger);
+        } catch (Exception e) {
+      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}   
     }//GEN-LAST:event_btAddFlightActionPerformed
 
     private void btDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelayActionPerformed
-        // TODO add your handling code here:
+        try {    
         String flightId = delayID.getItemAt(delayID.getSelectedIndex());
-        int hours = Integer.parseInt(delayHour.getItemAt(delayHour.getSelectedIndex()));
-        int minutes = Integer.parseInt(delayMinute.getItemAt(delayMinute.getSelectedIndex()));
+        int hours = Parsers.INTEGER.parse(delayHour.getItemAt(delayHour.getSelectedIndex()));
+        int minutes = Parsers.INTEGER.parse(delayMinute.getItemAt(delayMinute.getSelectedIndex()));
+
 
         Flight flight = null;
         for (Flight f : this.flights) {
@@ -1599,8 +1630,11 @@ public class AirportFrame extends javax.swing.JFrame {
                 flight = f;
             }
         }
-
+            
         flight.delay(hours, minutes);
+        } catch (Exception e) {
+      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btDelayActionPerformed
 
     private void btRefreshMyFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshMyFlightsActionPerformed
