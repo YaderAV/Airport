@@ -4,6 +4,7 @@
  */
 package airport.controllers;
 
+import airport.Models.Observable.ObservableBase;
 import airport.Models.Passenger;
 import airport.Models.Storage.Storage;
 import airport.controllers.utils.PassengerValidator;
@@ -18,7 +19,7 @@ import java.util.Comparator;
  *
  * @author yader
  */
-public class PassengerController {
+public class PassengerController extends ObservableBase{
 
     private final ArrayList<Passenger> passengers;
     private final Storage storage;

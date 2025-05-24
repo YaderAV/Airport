@@ -6,6 +6,7 @@ package airport.views;
 
 import airport.Models.Flight;
 import airport.Models.Location;
+import airport.Models.Observable.DataObserver;
 import airport.Models.Passenger;
 import airport.Models.Plane;
 import airport.controllers.FlightController;
@@ -22,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author edangulo
  */
-public class AirportFrame extends javax.swing.JFrame {
+public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
     /**
      * Creates new form AirportFrame
@@ -32,7 +33,6 @@ public class AirportFrame extends javax.swing.JFrame {
     private ArrayList<Plane> planes;
     private ArrayList<Location> locations;
     private ArrayList<Flight> flights;
-
     public AirportFrame() {
         initComponents();
 
@@ -49,8 +49,11 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
+        
     }
-
+    public void onDataChanged(){
+       
+    }
     private void blockPanels() {
         //9, 11
         for (int i = 1; i < views.getTabCount(); i++) {
@@ -104,8 +107,8 @@ public class AirportFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        container = new airport.PanelRound();
-        topView = new airport.PanelRound();
+        container = new airport.views.PanelRound();
+        topView = new airport.views.PanelRound();
         exit = new javax.swing.JButton();
         views = new javax.swing.JTabbedPane();
         administrationPanel = new javax.swing.JPanel();
@@ -242,7 +245,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel48 = new javax.swing.JLabel();
         delayMinute = new javax.swing.JComboBox<>();
         btDelay = new javax.swing.JButton();
-        lowView = new airport.PanelRound();
+        lowView = new airport.views.PanelRound();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -1444,7 +1447,7 @@ public class AirportFrame extends javax.swing.JFrame {
         String lastname = fieldLastName.getText();
         int year = Integer.parseInt(fieldYear.getText());
         int month = Integer.parseInt(monthPassengerR.getItemAt(monthPassengerR.getSelectedIndex()));
-        int day = Integer.parseInt(monthPassengerR.getItemAt(dayPassengerR.getSelectedIndex()));
+        int day = Integer.parseInt(dayPassengerR.getItemAt(dayPassengerR.getSelectedIndex()));
         int phoneCode = Integer.parseInt(fieldPreFix.getText());
         long phone = Long.parseLong(fieldPhone.getText());
         String country = fieldCountry.getText();
@@ -1695,7 +1698,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JButton btRefreshPassengers;
     private javax.swing.JButton btRegister;
     private javax.swing.JButton btUpdate;
-    private airport.PanelRound container;
+    private airport.views.PanelRound container;
     private javax.swing.JComboBox<String> dayPassengerR;
     private javax.swing.JComboBox<String> dayUpdate;
     private javax.swing.JPanel delayFlightPanel;
@@ -1789,7 +1792,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> locationDeparture;
     private javax.swing.JPanel locationRPanel;
     private javax.swing.JComboBox<String> locationScale;
-    private airport.PanelRound lowView;
+    private airport.views.PanelRound lowView;
     private javax.swing.JComboBox<String> monthPassengerR;
     private javax.swing.JComboBox<String> monthUpdate;
     private javax.swing.JPanel passengerRPanel;
@@ -1807,7 +1810,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JTable tableMyFlights;
     private javax.swing.JTable tablePassengers;
     private javax.swing.JTable tablePlanes;
-    private airport.PanelRound topView;
+    private airport.views.PanelRound topView;
     private javax.swing.JPanel updateInfoPanel;
     private javax.swing.JRadioButton user;
     private javax.swing.JComboBox<String> userSelect;
