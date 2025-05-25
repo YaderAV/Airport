@@ -117,11 +117,11 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
 
     
-private void updateMyFlightsTable(long passengerId) {
+private void updateMyFlightsTable(String passengerId) throws IOException {
     DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
     model.setRowCount(0);  // Limpiar tabla
 
-    List<Flight> flights = flightRepository.getFlightsByPassengerId(passengerId);
+    List<Flight> flights = flightRepository.getFlightsByPassenger(passengerId);
 
     for (Flight f : flights) {
         LocalDateTime departureDateTime = f.getSchedule().getDepartureDate();
@@ -1696,7 +1696,26 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btDelayActionPerformed
 
     private void btRefreshMyFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshMyFlightsActionPerformed
+     try {
+        String id = userSelect.getSelectedItem().toString();
+        if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
+            fieldIDupdate.setText(id);
+            fieldIDaddTFlight.setText(id);
 
+            // Actualizar la tabla de "Show my flights"
+            updateMyFlightsTable(id);
+        } else {
+            // Si es "Select User", limpiar campos y tabla
+            fieldIDupdate.setText("");
+            fieldIDaddTFlight.setText("");
+
+            DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+            model.setRowCount(0);
+        }
+    } catch (Exception e) {
+        // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
+    }
+        
     }//GEN-LAST:event_btRefreshMyFlightsActionPerformed
 
     private void btRefreshPassengersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshPassengersActionPerformed
@@ -1744,12 +1763,9 @@ private void updateLocationTable() {
     try {
         String id = userSelect.getSelectedItem().toString();
         if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
-            long passengerId = Long.parseLong(id);
             fieldIDupdate.setText(id);
             fieldIDaddTFlight.setText(id);
 
-            // Actualizar la tabla de "Show my flights"
-            updateMyFlightsTable(passengerId);
         } else {
             // Si es "Select User", limpiar campos y tabla
             fieldIDupdate.setText("");
