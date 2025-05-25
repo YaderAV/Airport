@@ -35,9 +35,6 @@ public class LocationCreationService {
             return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
         }
 
-        if (locations.get(location).equals(location.getAirportID())) {
-            return new Response("El ID del aeropuerto ya está registrado", Status.BAD_REQUEST);
-        }
 
         locations.put(location.getAirportID(), location);
         storage.getLocationLoader().saveLocations(locations);

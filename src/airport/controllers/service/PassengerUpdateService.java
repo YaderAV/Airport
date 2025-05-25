@@ -32,9 +32,6 @@ public class PassengerUpdateService {
                            int phoneCode, long phone, String country) throws IOException {
         Passenger passenger = passengers.get(id);
 
-        if (passenger == null) {
-            return new Response("Pasajero no encontrado.", Status.NOT_FOUND);
-        }
 
         Passenger updatedPassenger = new Passenger(id, name, lastName, birthDate, phoneCode, phone, country);
         PassengerValidator validator = new PassengerValidator(passengers);

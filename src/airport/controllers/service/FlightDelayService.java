@@ -8,6 +8,8 @@ import airport.Models.Entities.Flights.Flight;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import airport.controllers.utils.validators.FlightValidator;
+import airport.controllers.utils.validators.ValidationResult;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,12 +32,10 @@ public class FlightDelayService {
             .findFirst()
             .orElse(null);
 
-        if (flight == null) {
-            return new Response("Vuelo no encontrado", Status.NOT_FOUND);
-        }
-
-        if (hourDelay <= 0 && minuteDelay <= 0) {
-            return new Response("El retraso debe ser mayor a 00:00.", Status.BAD_REQUEST);
+        FlightValidator validator = new FlightValidator();
+        ValidationResult validation = validator.validate(flight);
+        if (!validation.isValid()) {
+            return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
         }
 
         flight.getSchedule().delay(hourDelay, minuteDelay);

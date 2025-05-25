@@ -48,10 +48,6 @@ public class FlightCreationService {
             return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
         }
 
-        boolean duplicateId = flights.stream().anyMatch(f -> f.getId().equals(id));
-        if (duplicateId) {
-            return new Response("El ID del vuelo ya está registrado", Status.BAD_REQUEST);
-        }
 
         flights.add(flight);
         storage.getFlightLoader().saveFlights(flights);
