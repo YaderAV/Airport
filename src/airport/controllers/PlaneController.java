@@ -4,14 +4,13 @@
  */
 package airport.controllers;
 
-
 import airport.Models.Entities.Plane;
 import airport.Models.Observable.ObservableBase;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.service.PlaneRegistrationService;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import java.util.ArrayList;
+import airport.controllers.utils.parser.PlaneDataParser;
 import java.util.Map;
 
 /**
@@ -19,21 +18,28 @@ import java.util.Map;
  * @author yader
  */
 public class PlaneController extends ObservableBase {
-    private final Map<String,Plane> planes;
+
+    private final Map<String, Plane> planes;
     private final JSONStorage storage;
 
-    public PlaneController(Map<String,Plane> planes, JSONStorage storage) {
+    public PlaneController(Map<String, Plane> planes, JSONStorage storage) {
         this.planes = planes;
         this.storage = storage;
     }
 
-    public Response registerPlane(String id, String brand, String model, int maxCapacity, String airline) {
+    public Response registerPlane(
+            String ID,
+            String brand,
+            String model,
+            String maxCapacity,
+            String airline
+    ) {
         try {
-            Plane plane = new Plane(id, brand, model, maxCapacity, airline);
+            Plane plane = PlaneDataParser.Parse(ID, brand, model, maxCapacity, airline);
             PlaneRegistrationService service;
             service = new PlaneRegistrationService(planes, storage);
             Response response = service.register(plane);
-            
+
             if (response.getStatus() == Status.CREATED) {
                 notifyObservers();
             }
@@ -50,6 +56,5 @@ public class PlaneController extends ObservableBase {
     public JSONStorage getStorage() {
         return storage;
     }
-    
-}
 
+}

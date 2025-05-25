@@ -31,16 +31,7 @@ public class FlightCreationService {
         this.storage = storage;
     }
 
-    public Response create(String id, Plane plane, Location departureLocation, Location scaleLocation,
-                           Location arrivalLocation, FlightSchedule flightSchedule) throws IOException {
-        Flight flight;
-        if (scaleLocation == null) {
-            flight = new DirectFlight(id, plane, departureLocation, arrivalLocation,
-            flightSchedule);
-        } else {
-            flight = new ScaledFlight(id, plane, departureLocation, scaleLocation, arrivalLocation,
-                    flightSchedule );
-        }
+    public Response create(Flight flight) throws IOException {
 
         FlightValidator validator = new FlightValidator(flights);
         ValidationResult validation = validator.validate(flight);

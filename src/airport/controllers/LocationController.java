@@ -7,9 +7,11 @@ package airport.controllers;
 import airport.Models.Entities.Location;
 import airport.controllers.service.LocationCreationService;
 import airport.Models.Observable.ObservableBase;
+import airport.Models.Storage.DataLoaders.LocationDataLoader;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import airport.controllers.utils.parser.LocationsDataParser;
 import java.util.Map;
 
 /**
@@ -25,9 +27,16 @@ public class LocationController extends ObservableBase {
         this.storage = storage;
     }
 
-    public Response createLocation(String airportId, String airportName, String airportCity, String airportCountry, double airportLatitude, double airportLongitude) {
+    public Response createLocation(
+            String IDAirportText,
+            String nameAirportText,
+            String cityAirportText,
+            String countryAirportText,
+            String latitudeAirportText,
+            String longitudeAirportText
+    ) {
         try {
-            Location location = new Location(airportId, airportName, airportCity, airportCountry, airportLatitude, airportLongitude);
+            Location location = LocationsDataParser.Parse(IDAirportText, nameAirportText, cityAirportText, countryAirportText, latitudeAirportText, longitudeAirportText);
             LocationCreationService service = new LocationCreationService(locations, storage);
             Response response = service.create(location);
 

@@ -10,14 +10,9 @@ import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.Models.Observable.DataObserver;
 import airport.Models.Observable.PassengerRepository;
-import airport.controllers.utils.Parsers;
-import airport.controllers.utils.Response;
-import airport.controllers.utils.Status;
+import airport.controllers.utils.parser.Parsers;
 import java.awt.Color;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 

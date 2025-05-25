@@ -9,7 +9,7 @@ import airport.Models.Observable.ObservableBase;
 import airport.controllers.service.PassengerRegistrationService;
 import airport.controllers.service.PassengerUpdateService;
 import airport.Models.Storage.JSONStorage;
-import airport.controllers.utils.PassengerDataParser;
+import airport.controllers.utils.parser.PassengerDataParser;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import java.io.IOException;

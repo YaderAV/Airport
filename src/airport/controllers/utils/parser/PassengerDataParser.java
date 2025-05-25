@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport.controllers.utils;
+package airport.controllers.utils.parser;
 
 /**
  *
@@ -10,6 +10,7 @@ package airport.controllers.utils;
  */
 
 
+import airport.controllers.utils.parser.Parsers;
 import airport.Models.Entities.Passenger;
 import java.time.LocalDate;
 

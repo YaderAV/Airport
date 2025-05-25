@@ -5,7 +5,6 @@
 package airport.controllers.utils.validators;
 
 import airport.Models.Entities.Plane;
-import airport.controllers.utils.Validator;
 
 /**
  *
