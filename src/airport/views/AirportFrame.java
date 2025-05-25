@@ -9,10 +9,19 @@ import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.Models.Observable.DataObserver;
+import airport.Models.Observable.FlightRepository;
+import airport.Models.Observable.LocationRepository;
 import airport.Models.Observable.PassengerRepository;
+import airport.Models.Observable.PlaneRepository;
+
 import airport.controllers.utils.parser.Parsers;
+
+
 import java.awt.Color;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,6 +40,9 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private ArrayList<Location> locations;
     private ArrayList<Flight> flights;
     private PassengerRepository passengerRepository;
+    private FlightRepository flightRepository;
+    private LocationRepository locationRepository ;
+    private PlaneRepository planeRepository;
     public AirportFrame() {
         initComponents();
         this.setBackground(new Color(0, 0, 0, 0));
@@ -45,11 +57,122 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     public void setPassengerRepository(PassengerRepository passengerRepository) {
     this.passengerRepository = passengerRepository;
 }
+    public void setFlightRepository(FlightRepository flightRepository) {
+    this.flightRepository = flightRepository;
+}
+       public void setLocationRepository(LocationRepository locationRepository) {
+       this.locationRepository  = locationRepository ;
+}
+         public void setPlaneRepository(PlaneRepository planeRepository) {
+         this.planeRepository  =planeRepository ;
+}
+
+
 
     
     @Override
     public void onDataChanged() {
-        DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+        updatePassengerTable();
+        updateFlightTable();
+        updateLocationTable();
+        updatePlaneTable();
+        cargarIDsEnComboBox();
+    
+    }
+    private void updatePlaneTable() {
+    DefaultTableModel planeModel = (DefaultTableModel) tablePlanes.getModel();
+    planeModel.setRowCount(0);
+
+    for (Plane p : planeRepository.getAllPlanes()) {
+        planeModel.addRow(new Object[]{
+            p.getId(),
+            p.getBrand(),
+            p.getModel(),
+            p.getMaxCapacity(),
+            p.getAirline()
+        });
+    }
+}
+    
+private void updateMyFlightsTable(long passengerId) {
+    DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+    model.setRowCount(0);  // Limpiar tabla
+
+    List<Flight> flights = flightRepository.getFlightsByPassengerId(passengerId);
+
+    for (Flight f : flights) {
+        LocalDateTime departureDateTime = f.getSchedule().getDepartureDate();
+        LocalDateTime arrivalDateTime = departureDateTime
+            .plusHours(f.getHoursDurationArrival())
+            .plusMinutes(f.getMinutesDurationArrival());
+
+        model.addRow(new Object[]{
+            f.getId(),
+            departureDateTime.toString(),
+            arrivalDateTime.toString()
+        });
+    }
+}
+
+    private void updateFlightTable() {
+        DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
+        model.setRowCount(0); // Limpiar tabla
+
+        for (Flight flight : flightRepository.getAllFlights()) {
+            String scaleAirportID = "-";
+            if (flight.getScaleLocation() != null) {
+                scaleAirportID = flight.getScaleLocation().getAirportID();
+            }
+
+            model.addRow(new Object[]{
+                flight.getId(),
+                flight.getDepartureLocation().getAirportID(),
+                flight.getArrivalLocation().getAirportID(),
+                scaleAirportID,
+                flight.getSchedule().getDepartureDate().toString(),
+                flight.getHoursDurationArrival(),
+                flight.getMinutesDurationArrival(),
+                flight.getHoursDurationScale(),
+                flight.getMinutesDurationScale()
+            });
+        }
+    }
+ 
+
+
+
+
+
+    private void cargarIDsEnComboBox() {
+       userSelect.removeAllItems();
+        userSelect.addItem("Select User");  // Agregar el primer ítem por defecto (opcional)
+        for (Passenger p : passengerRepository.getAllPassengers()) {
+            userSelect.addItem(String.valueOf(p.getId()));
+        }
+
+    }
+
+private void updateLocationTable() {
+    DefaultTableModel locationModel = (DefaultTableModel) tableLocations.getModel();
+    locationModel.setRowCount(0);
+
+    for (Location l : locationRepository.getAllLocations()) {
+        locationModel.addRow(new Object[]{
+            l.getAirportID(),
+            l.getAirportName(),
+            l.getAirportCity(),
+            l.getAirportCountry(),
+            l.getAirportLatitude(),
+            l.getAirportLongitude()
+        });
+    }
+}
+
+
+
+    
+     private void updatePassengerTable() {
+           DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
     model.setRowCount(0);
 
     for (Passenger p : passengerRepository.getAllPassengers()) {
@@ -58,7 +181,6 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         });
     }
     }
-
     private void blockPanels() {
         //9, 11
         for (int i = 1; i < views.getTabCount(); i++) {
@@ -290,12 +412,12 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         );
         topViewLayout.setVerticalGroup(
             topViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topViewLayout.createSequentialGroup()
-                .addComponent(exit)
-                .addGap(0, 12, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topViewLayout.createSequentialGroup()
+                .addGap(0, 12, Short.MAX_VALUE)
+                .addComponent(exit))
         );
 
-        container.add(topView, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, -1));
+        container.add(topView, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1150, -1));
 
         views.setFont(new java.awt.Font("Yu Gothic UI", 0, 14)); // NOI18N
 
@@ -417,47 +539,47 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         jLabel11.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel11.setText("ID:");
         airplaneRPlane.add(jLabel11);
-        jLabel11.setBounds(53, 96, 21, 25);
+        jLabel11.setBounds(53, 96, 24, 26);
 
         fieldIDairplane.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneRPlane.add(fieldIDairplane);
-        fieldIDairplane.setBounds(180, 93, 130, 31);
+        fieldIDairplane.setBounds(180, 93, 130, 32);
 
         jLabel12.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel12.setText("Brand:");
         airplaneRPlane.add(jLabel12);
-        jLabel12.setBounds(53, 157, 50, 25);
+        jLabel12.setBounds(53, 157, 56, 26);
 
         fieldBrand.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneRPlane.add(fieldBrand);
-        fieldBrand.setBounds(180, 154, 130, 31);
+        fieldBrand.setBounds(180, 154, 130, 32);
 
         fieldModel.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneRPlane.add(fieldModel);
-        fieldModel.setBounds(180, 213, 130, 31);
+        fieldModel.setBounds(180, 213, 130, 32);
 
         jLabel13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel13.setText("Model:");
         airplaneRPlane.add(jLabel13);
-        jLabel13.setBounds(53, 216, 55, 25);
+        jLabel13.setBounds(53, 216, 58, 26);
 
         fieldMaxCapacity.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneRPlane.add(fieldMaxCapacity);
-        fieldMaxCapacity.setBounds(180, 273, 130, 31);
+        fieldMaxCapacity.setBounds(180, 273, 130, 32);
 
         jLabel14.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel14.setText("Max Capacity:");
         airplaneRPlane.add(jLabel14);
-        jLabel14.setBounds(53, 276, 110, 25);
+        jLabel14.setBounds(53, 276, 118, 26);
 
         fieldAirline.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneRPlane.add(fieldAirline);
-        fieldAirline.setBounds(180, 333, 130, 31);
+        fieldAirline.setBounds(180, 333, 130, 32);
 
         jLabel15.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel15.setText("Airline:");
         airplaneRPlane.add(jLabel15);
-        jLabel15.setBounds(53, 336, 70, 25);
+        jLabel15.setBounds(53, 336, 70, 26);
 
         fieldCreateAirplane.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         fieldCreateAirplane.setText("Create");
@@ -937,7 +1059,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                 .addGroup(updateInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel43)
                     .addComponent(fieldCountryUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btUpdate)
                 .addGap(113, 113, 113))
         );
@@ -1376,7 +1498,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
         views.addTab("Delay flight", delayFlightPanel);
 
-        container.add(views, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 41, 1150, 620));
+        container.add(views, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 1150, 620));
 
         javax.swing.GroupLayout lowViewLayout = new javax.swing.GroupLayout(lowView);
         lowView.setLayout(lowViewLayout);
@@ -1442,6 +1564,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         views.setEnabledAt(6, true);
         views.setEnabledAt(7, true);
         views.setEnabledAt(11, true);
+        cargarIDsEnComboBox();
     }//GEN-LAST:event_userActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
@@ -1562,17 +1685,28 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     }//GEN-LAST:event_exitActionPerformed
 
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
-        try {
-            String id = userSelect.getSelectedItem().toString();
-            if (!id.equals(userSelect.getItemAt(0))) {
-                fieldIDupdate.setText(id);
-                fieldIDaddTFlight.setText(id);
-            } else {
-                fieldIDupdate.setText("");
-                fieldIDaddTFlight.setText("");
-            }
-        } catch (Exception e) {
+                                        
+    try {
+        String id = userSelect.getSelectedItem().toString();
+        if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
+            long passengerId = Long.parseLong(id);
+            fieldIDupdate.setText(id);
+            fieldIDaddTFlight.setText(id);
+
+            // Actualizar la tabla de "Show my flights"
+            updateMyFlightsTable(passengerId);
+        } else {
+            // Si es "Select User", limpiar campos y tabla
+            fieldIDupdate.setText("");
+            fieldIDaddTFlight.setText("");
+
+            DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+            model.setRowCount(0);
         }
+    } catch (Exception e) {
+        // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
+    }
+
     }//GEN-LAST:event_userSelectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

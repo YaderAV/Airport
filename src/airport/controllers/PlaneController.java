@@ -11,6 +11,7 @@ import airport.controllers.service.PlaneRegistrationService;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import airport.controllers.utils.parser.PlaneDataParser;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -49,12 +50,12 @@ public class PlaneController extends ObservableBase {
         }
     }
 
-    public Map<String, Plane> getPlanes() {
-        return planes;
-    }
+   public Response getAllPlanes() {
+    return new Response("Lista de aviones obtenida.", 200, new ArrayList<>(planes.values()));
+}
 
     public JSONStorage getStorage() {
         return storage;
     }
-
+    
 }
