@@ -4,27 +4,29 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Flight;
-import airport.Models.Passenger;
-import airport.Models.Storage.Storage;
+import airport.Models.Entities.Flights.Flight;
+import airport.Models.Entities.Passenger;
+import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author saraibanez
  */
 public class FlightAssignmentService {
-    private final ArrayList<Flight> flights;
-    private final Storage storage;
+    private final List<Flight> flights;
+    private final JSONStorage storage;
 
-    public FlightAssignmentService(ArrayList<Flight> flights, Storage storage) {
+    public FlightAssignmentService(List<Flight> flights, JSONStorage storage) {
         this.flights = flights;
         this.storage = storage;
     }
 
-    public Response assignPassenger(Passenger passenger, String flightID) {
+    public Response assignPassenger(Passenger passenger, String flightID) throws IOException {
         Flight flight = flights.stream()
             .filter(f -> f.getId().equals(flightID))
             .findFirst()
@@ -34,9 +36,9 @@ public class FlightAssignmentService {
             return new Response("Vuelo no encontrado", Status.NOT_FOUND);
         }
 
-        flight.addPassenger(passenger);
-        passenger.addFlight(flight);
-        storage.saveFlights(flights);
+        flight.getPassengerList().addPassenger(passenger);
+        passenger.getFlights().add(flight);
+        storage. getFlightLoader().saveFlights(flights);
 
         return new Response("Pasajero añadido al vuelo", Status.OK, flight);
     }

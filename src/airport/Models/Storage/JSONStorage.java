@@ -1,71 +1,53 @@
 package airport.Models.Storage;
 
-import java.util.ArrayList;
+import airport.Models.Entities.Flights.Flight;
+import airport.Models.Entities.Location;
+import airport.Models.Entities.Passenger;
+import airport.Models.Entities.Plane;
+import airport.Models.Storage.DataLoaders.FlightDataLoader;
+import airport.Models.Storage.DataLoaders.LocationDataLoader;
+import airport.Models.Storage.DataLoaders.PassengerDataLoader;
+import airport.Models.Storage.DataLoaders.PlaneDataLoader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import airport.Models.Flight;
-import airport.Models.Location;
-import airport.Models.Passenger;
-import airport.Models.Plane;
-import airport.Storage.FlightStorage;
-import airport.Storage.LocationStorage;
-import airport.Storage.PassengerStorage;
-import airport.Storage.PlaneStorage;
+public class JSONStorage   {
+    private final PlaneDataLoader planeLoader; 
+    private final LocationDataLoader locationLoader; 
+    private final PassengerDataLoader passengerLoader; 
+    private final FlightDataLoader flightLoader; 
 
-public class JSONStorage  implements LocationStorage, PlaneStorage , PassengerStorage , FlightStorage {
-    private final JSONLocationStorage locationStorage;
-    private final JSONPassengerStorage passengerStorage;
-    private final JSONPlaneStorage planeStorage;
-    private final JSONFlightStorage flightStorage;
-
-    public JSONStorage(String locationPath, String passengerPath, String planePath, String flightPath) {
-        this.locationStorage = new JSONLocationStorage(locationPath);
-        this.passengerStorage = new JSONPassengerStorage(passengerPath);
-        this.planeStorage = new JSONPlaneStorage(planePath);
-        this.flightStorage = new JSONFlightStorage(flightPath);
+    public JSONStorage(PlaneDataLoader planeLoader, LocationDataLoader locationLoader, PassengerDataLoader passengerLoader, FlightDataLoader flightLoader) {
+        this.planeLoader = planeLoader;
+        this.locationLoader = locationLoader;
+        this.passengerLoader = passengerLoader;
+        this.flightLoader = flightLoader;
+    }
+    
+    
+    public LoadedData loadAll() throws IOException{
+        Map<String, Plane> planes = planeLoader.loadPlanes();
+        Map<String, Location> locations = locationLoader.loadLocations();
+        Map<Long, Passenger> passengers = passengerLoader.loadPassengers();
+        List<Flight> flights = flightLoader.loadFlights();
+        return new LoadedData(planes, locations, passengers, flights);
     }
 
-    @Override
-    public ArrayList<Flight> loadFlights(ArrayList<Location> locations, ArrayList<Passenger> passengers,
-            ArrayList<Plane> planes) {
-                 return flightStorage.loadFlights(locations, passengers, planes);
+    public PlaneDataLoader getPlaneLoader() {
+        return planeLoader;
     }
 
-    @Override
-    public void saveFlights(ArrayList<Flight> flights) {
-        flightStorage.saveFlights( flights);
+    public LocationDataLoader getLocationLoader() {
+        return locationLoader;
     }
 
-    @Override
-     public ArrayList<Passenger> loadPassengers() {
-         return passengerStorage.loadPassengers();
+    public PassengerDataLoader getPassengerLoader() {
+        return passengerLoader;
     }
 
-    public ArrayList<Plane> loadPlanes() {
-         return planeStorage.loadPlanes();
+    public FlightDataLoader getFlightLoader() {
+        return flightLoader;
     }
-
-    @Override
-    public void savePlanes(ArrayList<Plane> planes) {
-        planeStorage.savePlanes(planes);
-    }
-
-    @Override
-    public ArrayList<Location> loadLocations() {
-         return locationStorage.loadLocations();
-    }
-
-    @Override
-    public void saveLocations(ArrayList<Location> locations) {
-     locationStorage.saveLocations(locations);
-    }
-
-    @Override
-    public void savePassengers(ArrayList<Passenger> passengers) {
-        passengerStorage.savePassengers(passengers);
-    }
-
-
-
-   
     
 }

@@ -4,23 +4,23 @@
  */
 package airport.controllers;
 
+import airport.Models.Entities.Location;
 import airport.controllers.service.LocationCreationService;
-import airport.Models.Location;
 import airport.Models.Observable.ObservableBase;
-import airport.Models.Storage.Storage;
+import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
  * @author yader
  */
 public class LocationController extends ObservableBase {
-  private final ArrayList<Location> locations;
-  private final Storage storage;
+  private final Map<String, Location> locations;
+  private final JSONStorage storage;
 
-    public LocationController(ArrayList<Location> locations, Storage storage) {
+    public LocationController(Map<String,Location> locations, JSONStorage storage) {
         this.locations = locations;
         this.storage = storage;
     }

@@ -4,15 +4,12 @@
  */
 package airport.views;
 
-import airport.Models.Flight;
-import airport.Models.Location;
+import airport.Models.Entities.Flights.DirectFlight;
+import airport.Models.Entities.Flights.Flight;
+import airport.Models.Entities.Location;
+import airport.Models.Entities.Passenger;
+import airport.Models.Entities.Plane;
 import airport.Models.Observable.DataObserver;
-import airport.Models.Passenger;
-import airport.Models.Plane;
-import airport.controllers.FlightController;
-import airport.controllers.LocationController;
-import airport.controllers.PassengerController;
-import airport.controllers.PlaneController;
 import airport.controllers.utils.Parsers;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -53,8 +50,10 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         this.blockPanels();
         
     }
-    public void onDataChanged(){
-       
+    
+    @Override
+    public void onDataChanged() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     private void blockPanels() {
         //9, 11
@@ -1501,163 +1500,23 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     }//GEN-LAST:event_btCreateLocationActionPerformed
 
     private void btCreateFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateFlightActionPerformed
-        // TODO add your handling code here:
-    try {    
-        String id = fieldIDflight.getText();
-        String planeId = planeFlightR.getItemAt(planeFlightR.getSelectedIndex());
-        String departureLocationId = locationDeparture.getItemAt(locationDeparture.getSelectedIndex());
-        String arrivalLocationId = locationArrival.getItemAt(locationArrival.getSelectedIndex());
-        String scaleLocationId = locationScale.getItemAt(locationScale.getSelectedIndex());
-
-        int year = Parsers.INTEGER.parse(departureYear.getText());
-        int month = Parsers.INTEGER.parse(departureMonth.getItemAt(departureMonth.getSelectedIndex()));
-        int day = Parsers.INTEGER.parse(departureDay.getItemAt(departureDay.getSelectedIndex()));
-        int hour = Parsers.INTEGER.parse(departureHour.getItemAt(departureHour.getSelectedIndex()));
-        int minutes = Parsers.INTEGER.parse(departureMinute.getItemAt(departureMinute.getSelectedIndex()));
-
-        int hoursDurationsArrival = Parsers.INTEGER.parse(arrivalHour.getItemAt(arrivalHour.getSelectedIndex()));
-        int minutesDurationsArrival = Parsers.INTEGER.parse(arrivalMinute.getItemAt(arrivalMinute.getSelectedIndex()));
-        int hoursDurationsScale = Parsers.INTEGER.parse(scaleHour.getItemAt(scaleHour.getSelectedIndex()));
-        int minutesDurationsScale = Parsers.INTEGER.parse(scaleMinute.getItemAt(scaleMinute.getSelectedIndex()));
-
-        LocalDateTime departureDate = LocalDateTime.of(year, month, day, hour, minutes);
-
-
-            Plane plane = null;
-            for (Plane p : this.planes) {
-                if (planeId.equals(p.getId())) {
-                    plane = p;
-                }
-            }
-
-            Location departure = null;
-            Location arrival = null;
-            Location scale = null;
-            for (Location location : this.locations) {
-                if (departureLocationId.equals(location.getAirportId())) {
-                    departure = location;
-                }
-                if (arrivalLocationId.equals(location.getAirportId())) {
-                    arrival = location;
-                }
-                if (scaleLocationId.equals(location.getAirportId())) {
-                    scale = location;
-                }
-            }
-
-            if (scale == null) {
-                this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival));
-            } else {
-                this.flights.add(new Flight(id, plane, departure, scale, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale));
-            }
-
-            this.addFlightB.addItem(id);
-            
-           } catch (Exception e) {
-    JOptionPane.showMessageDialog(this, "Error en los datos del vuelo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-} 
+        
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
-        // TODO add your handling code here:
-       try {    
-        long id = Parsers.LONG.parse(fieldIDupdate.getText());
-        String firstname = fieldFirstNameUpdate.getText();
-        String lastname = fieldLastNameUpdate.getText();
-        int year = Parsers.INTEGER.parse(fieldYearUpdate.getText());
-        int month = Parsers.INTEGER.parse(monthPassengerR.getItemAt(monthUpdate.getSelectedIndex()));
-        int day = Parsers.INTEGER.parse(dayPassengerR.getItemAt(dayUpdate.getSelectedIndex()));
-        int phoneCode = Parsers.INTEGER.parse(fieldPrefixUpdate.getText());
-        long phone = Parsers.LONG.parse(fieldPhoneUpdate.getText());
-        String country = fieldCountryUpdate.getText();
-
-
-        LocalDate birthDate = LocalDate.of(year, month, day);
-
-        Passenger passenger = null;
-        for (Passenger p : this.passengers) {
-            if (p.getId() == id) {
-                passenger = p;
-            }
-        }
-
-        passenger.setFirstname(firstname);
-        passenger.setLastname(lastname);
-        passenger.setBirthDate(birthDate);
-        passenger.setCountryPhoneCode(phoneCode);
-        passenger.setPhone(phone);
-        passenger.setCountry(country);
-        
-        
-      } catch (Exception e) {
-      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-}   
+  
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
-        try {    
-        long passengerId = Parsers.LONG.parse(fieldIDaddTFlight.getText());
-        String flightId = addFlightB.getItemAt(addFlightB.getSelectedIndex());
-
-        Passenger passenger = null;
-        Flight flight = null;
-
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passengerId) {
-                passenger = p;
-            }
-        }
-
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
-        }
-
-        passenger.addFlight(flight);
-        flight.addPassenger(passenger);
-        } catch (Exception e) {
-      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-}   
+        
     }//GEN-LAST:event_btAddFlightActionPerformed
 
     private void btDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelayActionPerformed
-        try {    
-        String flightId = delayID.getItemAt(delayID.getSelectedIndex());
-        int hours = Parsers.INTEGER.parse(delayHour.getItemAt(delayHour.getSelectedIndex()));
-        int minutes = Parsers.INTEGER.parse(delayMinute.getItemAt(delayMinute.getSelectedIndex()));
-
-
-        Flight flight = null;
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
-        }
-            
-        flight.delay(hours, minutes);
-        } catch (Exception e) {
-      JOptionPane.showMessageDialog(this, "Error en los datos : " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        
     }//GEN-LAST:event_btDelayActionPerformed
 
     private void btRefreshMyFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshMyFlightsActionPerformed
-        // TODO add your handling code here:
-        long passengerId = Long.parseLong(userSelect.getItemAt(userSelect.getSelectedIndex()));
-
-        Passenger passenger = null;
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passengerId) {
-                passenger = p;
-            }
-        }
-
-        ArrayList<Flight> flights = passenger.getFlights();
-        DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
-        model.setRowCount(0);
-        for (Flight flight : flights) {
-            model.addRow(new Object[]{flight.getId(), flight.getDepartureDate(), flight.calculateArrivalDate()});
-        }
+        
     }//GEN-LAST:event_btRefreshMyFlightsActionPerformed
 
     private void btRefreshPassengersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshPassengersActionPerformed
@@ -1665,7 +1524,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
         model.setRowCount(0);
         for (Passenger passenger : this.passengers) {
-            model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.calculateAge(), passenger.generateFullPhone(), passenger.getCountry(), passenger.getNumFlights()});
+            model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.getAge(), passenger.getFullPhone(), passenger.getCountry(), passenger.getNumberFlights()});
         }
     }//GEN-LAST:event_btRefreshPassengersActionPerformed
 
@@ -1674,7 +1533,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
         model.setRowCount(0);
         for (Flight flight : this.flights) {
-            model.addRow(new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), flight.calculateArrivalDate(), flight.getPlane().getId(), flight.getNumPassengers()});
+           
         }
     }//GEN-LAST:event_refreshAllFlightsActionPerformed
 
@@ -1692,7 +1551,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         DefaultTableModel model = (DefaultTableModel) tableLocations.getModel();
         model.setRowCount(0);
         for (Location location : this.locations) {
-            model.addRow(new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()});
+            model.addRow(new Object[]{location.getAirportID(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()});
         }
     }//GEN-LAST:event_btRefreshAllLocationsActionPerformed
 

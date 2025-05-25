@@ -4,8 +4,9 @@
  */
 package airport.Models.Observable;
 
-import airport.Models.Flight;
+import airport.Models.Entities.Flights.Flight;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -13,13 +14,13 @@ import java.util.ArrayList;
  */
 public class FlightRepository extends ObservableBase {
 
-    private final ArrayList<Flight> flights = new ArrayList();
+    private final List<Flight> flights = new ArrayList();
 
     public void addFlight(Flight flight) {
         flights.add(flight);
         for (int i = 0; i < flights.size() - 1; i++) {
             for (int j = i + 1; j < flights.size(); j++) {
-                if(flights.get(i).getDepartureDate().isAfter(flights.get(j).getDepartureDate())){
+                if(flights.get(i).getSchedule().getDepartureDate().isAfter(flights.get(j).getSchedule().getDepartureDate())){
                     Flight temp = flights.get(j);
                     flights.set(j, flights.get(i));
                     flights.set(i, temp);

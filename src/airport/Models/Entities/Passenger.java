@@ -2,16 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport.Models;
+package airport.Models.Entities;
 
+import airport.Models.Entities.Flights.Flight;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import org.json.JSONObject;
+import java.util.List;
 
 /**
  *
- * @author edangulo
+ * @author yader
  */
 public class Passenger {
 
@@ -22,7 +23,7 @@ public class Passenger {
     private int countryPhoneCode;
     private long phone;
     private String country;
-    private ArrayList<Flight> flights;
+    private final List<Flight> flights = new ArrayList<>();
 
     public Passenger(long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country) {
         this.id = id;
@@ -32,35 +33,22 @@ public class Passenger {
         this.countryPhoneCode = countryPhoneCode;
         this.phone = phone;
         this.country = country;
-        this.flights = new ArrayList<>();
     }
 
-    public JSONObject toJSON() {
-        JSONObject obj = new JSONObject();
-        obj.put("id", id);
-        obj.put("firstname", firstname);
-        obj.put("lastname", lastname);
-        obj.put("birthDate", birthDate);
-        obj.put("countryPhoneCode", countryPhoneCode);
-        obj.put("phone", phone);
-        obj.put("country", country);
-        return obj;
+    public String getFullname() {
+        return firstname + " " + lastname;
     }
-    
-    public static Passenger fromJSON(JSONObject obj){
-        return new Passenger(
-        obj.getLong("id"),
-        obj.getString("firstname"),
-        obj.getString("lastname"),
-        LocalDate.parse(obj.getString("birthDate")),
-        obj.getInt("countryPhoneCode"),
-        obj.getLong("phone"),
-        obj.getString("country")
-        );
+
+    public String getFullPhone() {
+        return "+" + countryPhoneCode + " " + phone;
     }
-    
-    public void addFlight(Flight flight) {
-        this.flights.add(flight);
+
+    public int getAge() {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
+    public int getNumberFlights() {
+        return flights.size();
     }
 
     public long getId() {
@@ -91,7 +79,7 @@ public class Passenger {
         return country;
     }
 
-    public ArrayList<Flight> getFlights() {
+    public List<Flight> getFlights() {
         return flights;
     }
 
@@ -103,8 +91,8 @@ public class Passenger {
         this.lastname = lastname;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthDate(LocalDate bithDate) {
+        this.birthDate = bithDate;
     }
 
     public void setCountryPhoneCode(int countryPhoneCode) {
@@ -117,22 +105,6 @@ public class Passenger {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getFullname() {
-        return firstname + " " + lastname;
-    }
-
-    public String generateFullPhone() {
-        return "+" + countryPhoneCode + " " + phone;
-    }
-
-    public int calculateAge() {
-        return Period.between(birthDate, LocalDate.now()).getYears();
-    }
-
-    public int getNumFlights() {
-        return flights.size();
     }
 
 }

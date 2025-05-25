@@ -4,42 +4,42 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Flight;
-import airport.Models.Location;
-import airport.Models.Plane;
-import airport.Models.Storage.Storage;
-import airport.controllers.utils.FlightValidator;
+import airport.Models.Entities.Flights.DirectFlight;
+import airport.Models.Entities.Flights.Flight;
+import airport.Models.Entities.Flights.FlightSchedule;
+import airport.Models.Entities.Flights.ScaledFlight;
+import airport.Models.Entities.Location;
+import airport.Models.Entities.Plane;
+import airport.Models.Storage.JSONStorage;
+import airport.controllers.utils.validators.FlightValidator;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import airport.controllers.utils.ValidationResult;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import airport.controllers.utils.validators.ValidationResult;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *
  * @author saraibanez
  */
 public class FlightCreationService {
-    private final ArrayList<Flight> flights;
-    private final Storage storage;
+    private final List<Flight> flights;
+    private final JSONStorage storage;
 
-    public FlightCreationService(ArrayList<Flight> flights, Storage storage) {
+    public FlightCreationService(List<Flight> flights, JSONStorage storage) {
         this.flights = flights;
         this.storage = storage;
     }
 
     public Response create(String id, Plane plane, Location departureLocation, Location scaleLocation,
-                           Location arrivalLocation, LocalDateTime departureDate,
-                           int hoursDurationArrival, int minutesDurationArrival,
-                           int hoursDurationScale, int minutesDurationScale) {
+                           Location arrivalLocation, FlightSchedule flightSchedule) throws IOException {
         Flight flight;
         if (scaleLocation == null) {
-            flight = new Flight(id, plane, departureLocation, arrivalLocation,
-                    departureDate, hoursDurationArrival, minutesDurationArrival);
+            flight = new DirectFlight(id, plane, departureLocation, arrivalLocation,
+            flightSchedule);
         } else {
-            flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation,
-                    departureDate, hoursDurationArrival, minutesDurationArrival,
-                    hoursDurationScale, minutesDurationScale);
+            flight = new ScaledFlight(id, plane, departureLocation, scaleLocation, arrivalLocation,
+                    flightSchedule );
         }
 
         FlightValidator validator = new FlightValidator();
@@ -54,7 +54,7 @@ public class FlightCreationService {
         }
 
         flights.add(flight);
-        storage.saveFlights(flights);
+        storage.getFlightLoader().saveFlights(flights);
         return new Response("Vuelo registrado correctamente", Status.CREATED, flight);
     }
 }

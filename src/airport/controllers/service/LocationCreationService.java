@@ -4,28 +4,30 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Location;
-import airport.Models.Storage.Storage;
-import airport.controllers.utils.LocationValidator;
+import airport.Models.Entities.Location;
+import airport.Models.Storage.JSONStorage;
+import airport.controllers.utils.validators.LocationValidator;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import airport.controllers.utils.ValidationResult;
+import airport.controllers.utils.validators.ValidationResult;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
  * @author saraibanez
  */
 public class LocationCreationService {
-    private final ArrayList<Location> locations;
-    private final Storage storage;
+    private final Map<String, Location> locations;
+    private final JSONStorage storage;
 
-    public LocationCreationService(ArrayList<Location> locations, Storage storage) {
+    public LocationCreationService(Map<String,Location> locations, JSONStorage storage) {
         this.locations = locations;
         this.storage = storage;
     }
 
-    public Response create(Location location) {
+    public Response create(Location location) throws IOException {
         LocationValidator validator = new LocationValidator();
         ValidationResult validation = validator.validate(location);
 
@@ -33,12 +35,12 @@ public class LocationCreationService {
             return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
         }
 
-        if (locations.stream().anyMatch(l -> l.getAirportId().equals(location.getAirportId()))) {
+        if (locations.get(location).equals(location.getAirportID())) {
             return new Response("El ID del aeropuerto ya está registrado", Status.BAD_REQUEST);
         }
 
-        locations.add(location);
-        storage.saveLocations(locations);
+        locations.put(location.getAirportID(), location);
+        storage.getLocationLoader().saveLocations(locations);
         return new Response("Localización registrada correctamente", Status.CREATED);
     }
 }

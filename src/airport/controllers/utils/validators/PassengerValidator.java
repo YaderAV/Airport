@@ -2,25 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport.controllers.utils;
+package airport.controllers.utils.validators;
 
-import airport.Models.Passenger;
+import airport.Models.Entities.Passenger;
+import airport.controllers.utils.Validator;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author yader
  */
 public class PassengerValidator implements Validator<Passenger> {
-    private final List<Passenger> existingPassengers;
-    public PassengerValidator(java.util.List<airport.Models.Passenger> existingPassengers) {
+    private final Map<Long, Passenger> existingPassengers;
+
+    public PassengerValidator(Map<Long, Passenger> existingPassengers) {
         this.existingPassengers = existingPassengers;
     }
-
-    public PassengerValidator() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
     @Override
     public ValidationResult validate(Passenger p) {
@@ -28,8 +28,6 @@ public class PassengerValidator implements Validator<Passenger> {
         ValidationResult result = new ValidationResult();
         if (p.getId() <= 0 || String.valueOf(p.getId()).length() > 15)
             result.addError("ID inválido, debe tener al más 15 dígitos y ser mayor que 0. ");
-        if (existingPassengers.stream().anyMatch(pass -> pass.getId() == p.getId()))
-            result.addError("El ID del pasajero ya está registrado.");
         if (p.getFirstname() == null || p.getFirstname().isBlank()) result.addError("Nombre vacío.");
         if (p.getLastname() == null || p.getLastname().isBlank()) result.addError("Apellido vacío.");
         if (p.getBirthDate() == null || p.getBirthDate().isAfter(LocalDate.now())) result.addError("Fecha de nacimiento inválida.");

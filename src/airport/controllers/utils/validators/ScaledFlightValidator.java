@@ -2,20 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport.controllers.utils;
+package airport.controllers.utils.validators;
 
-import airport.Models.Flight;
+import airport.Models.Entities.Flights.ScaledFlight;
+import airport.controllers.utils.Validator;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author yader
  */
-public class FlightValidator implements Validator<Flight> {
+public class ScaledFlightValidator implements Validator<ScaledFlight>{
 
     @Override
-    public ValidationResult validate(Flight f) {
-        ValidationResult result = new ValidationResult();
+    public ValidationResult validate(ScaledFlight f) {
+         ValidationResult result = new ValidationResult();
         if (f.getId() == null || !f.getId().matches("[A-Z]{3}\\d{3}")) {
             result.addError("El ID del formato debe ser XXXYYY. X letra Mayúscula y Y dígito");
         }
@@ -28,22 +29,16 @@ public class FlightValidator implements Validator<Flight> {
         if (f.getArrivalLocation() == null) {
             result.addError("Destino no especificado");
         }
-        if (f.getDepartureDate().isBefore(LocalDateTime.now()) || f.getDepartureDate() == null) {
+        if (f.getSchedule().getDepartureDate().isBefore(LocalDateTime.now()) 
+                || f.getSchedule().getDepartureDate() == null) {
             result.addError("Fecha de salida inválida");
         }
-        if (f.getHoursDurationArrival() < 0 && f.getMinutesDurationArrival() < 0) {
+        if (f.getSchedule().getHoursDurationArrival() < 0 && f.getSchedule().getMinutesDurationArrival() < 0) {
             result.addError("Duración de vuelo debe ser mayor que 00:00");
         }
-        if (f.getScaleLocation() == null) {
-            if (f.getHoursDurationArrival() > 0 || f.getMinutesDurationScale() > 0) {
-                result.addError("No debe haber tiempo de escala sino hay escala");
-            } else {
-                if (f.getHoursDurationScale() < 0 && f.getMinutesDurationArrival() < 0) {
-                    result.addError("Duración de escala inválida");
-                }
-            }
-        }
+        if(f.getSchedule().getMinutesDurationScale()<=0 && f.getSchedule().getHoursDurationArrival()<=0)
+            result.addError("Duracion de escala debe ser mayor que 00:00");
         return result;
     }
-
+    
 }

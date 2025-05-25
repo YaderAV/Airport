@@ -4,28 +4,27 @@
  */
 package airport.controllers;
 
-
+import airport.Models.Entities.Passenger;
 import airport.Models.Observable.ObservableBase;
 import airport.controllers.service.PassengerRegistrationService;
 import airport.controllers.service.PassengerUpdateService;
-import airport.Models.Passenger;
-import airport.Models.Storage.Storage;
+import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Map;
 
 /**
  *
  * @author yader
  */
-public class PassengerController extends ObservableBase{
+public class PassengerController extends ObservableBase {
 
-    private final ArrayList<Passenger> passengers;
-    private final Storage storage;
+    private final Map<Long, Passenger> passengers;
+    private final JSONStorage storage;
 
-    public PassengerController(ArrayList<Passenger> passengers, Storage storage) {
+    public PassengerController(Map<Long, Passenger> passengers, JSONStorage storage) {
         this.passengers = passengers;
         this.storage = storage;
     }
@@ -35,14 +34,14 @@ public class PassengerController extends ObservableBase{
             Passenger passenger = new Passenger(id, name, lastname, birthDate, phoneCode, phone, country);
             PassengerRegistrationService service = new PassengerRegistrationService(passengers, storage);
             return service.register(passenger);
-            
+
         } catch (Exception e) {
             return new Response("Error al registrar pasajero: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate, int phoneCode, long phone, String country) {
-        Passenger passenger = passengers.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
+    public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate, int phoneCode, long phone, String country) throws IOException {
+        Passenger passenger = passengers.get(id);
         if (passenger == null) {
             return new Response("Pasajero no encontrado.", Status.NOT_FOUND);
         }
@@ -51,7 +50,7 @@ public class PassengerController extends ObservableBase{
     }
 
     public Response getPassengerById(long id) {
-        Passenger p = passengers.stream().filter(pa -> pa.getId() == id).findFirst().orElse(null);
+        Passenger p = passengers.get(id);
         if (p == null) {
             return new Response("Pasajero no encontrado", Status.NOT_FOUND);
         }
@@ -59,10 +58,12 @@ public class PassengerController extends ObservableBase{
     }
 
     public Response getAllPassengers() {
-        ArrayList<Passenger> sorted = (ArrayList<Passenger>) passengers.stream()
-                .sorted(Comparator.comparingLong(Passenger::getId))
-                .toList();
-        return new Response("Lista de pasajeros obtenida.", Status.OK, sorted);
+        var sortedList = passengers.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .toList(); 
+
+        return new Response("Lista de pasajeros obtenida.", Status.OK, sortedList);
     }
 
 }

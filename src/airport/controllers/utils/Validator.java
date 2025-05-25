@@ -4,6 +4,8 @@
  */
 package airport.controllers.utils;
 
+import airport.controllers.utils.validators.ValidationResult;
+
 /**
  *
  * @author yader

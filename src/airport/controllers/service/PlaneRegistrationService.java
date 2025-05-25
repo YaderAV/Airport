@@ -4,28 +4,30 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Plane;
-import airport.Models.Storage.Storage;
-import airport.controllers.utils.PlaneValidator;
+import airport.Models.Entities.Plane;
+import airport.Models.Storage.JSONStorage;
+import airport.controllers.utils.validators.PlaneValidator;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import airport.controllers.utils.ValidationResult;
+import airport.controllers.utils.validators.ValidationResult;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
  * @author saraibanez
  */
 public class PlaneRegistrationService {
-    private final ArrayList<Plane> planes;
-    private final Storage storage;
+    private final Map<String,Plane> planes;
+    private final JSONStorage storage;
 
-    public PlaneRegistrationService(ArrayList<Plane> planes, Storage storage) {
+    public PlaneRegistrationService(Map<String,Plane> planes, JSONStorage storage) {
         this.planes = planes;
         this.storage = storage;
     }
 
-    public Response register(Plane plane) {
+    public Response register(Plane plane) throws IOException {
         PlaneValidator planeValidator = new PlaneValidator();
         ValidationResult planeValidation = planeValidator.validate(plane);
 
@@ -33,12 +35,9 @@ public class PlaneRegistrationService {
             return new Response(planeValidation.getCombinedMessage(), Status.BAD_REQUEST);
         }
 
-        if (planes.stream().anyMatch(pl -> pl.getId().equals(plane.getId()))) {
-            return new Response("El ID del avión ya está registrado.", Status.BAD_REQUEST);
-        }
 
-        planes.add(plane);
-        storage.savePlanes(planes);
+        planes.put(plane.getId(), plane);
+        storage.getPlaneLoader().savePlanes(planes);
         return new Response("Avión registrado correctamente.", Status.CREATED, plane);
     }
 }

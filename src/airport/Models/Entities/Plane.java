@@ -2,23 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport.Models;
+package airport.Models.Entities;
 
+import airport.Models.Entities.Flights.Flight;
 import java.util.ArrayList;
-import org.json.JSONObject;
+import java.util.List;
 
 /**
  *
- * @author edangulo
+ * @author yader
  */
 public class Plane {
-    
+
     private final String id;
     private String brand;
     private String model;
     private final int maxCapacity;
     private String airline;
-    private ArrayList<Flight> flights;
+    private final List<Flight> flightsPlane = new ArrayList<>();
 
     public Plane(String id, String brand, String model, int maxCapacity, String airline) {
         this.id = id;
@@ -26,34 +27,16 @@ public class Plane {
         this.model = model;
         this.maxCapacity = maxCapacity;
         this.airline = airline;
-        this.flights = new ArrayList<>();
     }
-    
-public JSONObject toJSON() {
-    JSONObject obj = new JSONObject();
-    obj.put("id", id);
-    obj.put("brand", brand);
-    obj.put("model", model);
-    obj.put("maxCapacity", maxCapacity);
-    obj.put("airline", airline);
-    return obj;
-}
-
-public static Plane fromJSON(JSONObject obj) {
-    return new Plane(
-        obj.getString("id"),
-        obj.getString("brand"),
-        obj.getString("model"),
-        obj.getInt("maxCapacity"),
-        obj.getString("airline")
-    );
-}
-
 
     public void addFlight(Flight flight) {
-        this.flights.add(flight);
+        flightsPlane.add(flight);
     }
-    
+
+    public int getNumFlights() {
+        return flightsPlane.size();
+    }
+
     public String getId() {
         return id;
     }
@@ -74,12 +57,21 @@ public static Plane fromJSON(JSONObject obj) {
         return airline;
     }
 
-    public ArrayList<Flight> getFlights() {
-        return flights;
+    public List<Flight> getFlightsPlane() {
+        return flightsPlane;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setAirline(String airline) {
+        this.airline = airline;
     }
     
-    public int getNumFlights() {
-        return flights.size();
-    }
     
 }

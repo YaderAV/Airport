@@ -4,27 +4,27 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Flight;
-import airport.Models.Storage.Storage;
+import airport.Models.Entities.Flights.Flight;
+import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *
  * @author saraibanez
  */
 public class FlightDelayService {
-    private final ArrayList<Flight> flights;
-    private final Storage storage;
+    private final List<Flight> flights;
+    private final JSONStorage storage;
 
-    public FlightDelayService(ArrayList<Flight> flights, Storage storage) {
+    public FlightDelayService(List<Flight> flights, JSONStorage storage) {
         this.flights = flights;
         this.storage = storage;
     }
 
-    public Response delay(String id, int hourDelay, int minuteDelay) {
+    public Response delay(String id, int hourDelay, int minuteDelay) throws IOException {
         Flight flight = flights.stream()
             .filter(f -> f.getId().equals(id))
             .findFirst()
@@ -38,12 +38,9 @@ public class FlightDelayService {
             return new Response("El retraso debe ser mayor a 00:00.", Status.BAD_REQUEST);
         }
 
-        LocalDateTime newDepartureDate = flight.getDepartureDate()
-            .plusHours(hourDelay)
-            .plusMinutes(minuteDelay);
-        flight.setDepartureDate(newDepartureDate);
+        flight.getSchedule().delay(hourDelay, minuteDelay);
 
-        storage.saveFlights(flights);
+        storage.getFlightLoader().saveFlights(flights);
         return new Response("Vuelo retrasado exitosamente", Status.OK, flight);
     }
 }
