@@ -42,7 +42,7 @@ public class FlightCreationService {
                     flightSchedule );
         }
 
-        FlightValidator validator = new FlightValidator();
+        FlightValidator validator = new FlightValidator(flights);
         ValidationResult validation = validator.validate(flight);
         if (!validation.isValid()) {
             return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);

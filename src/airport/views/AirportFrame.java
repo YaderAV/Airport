@@ -4,7 +4,6 @@
  */
 package airport.views;
 
-import airport.Models.Entities.Flights.DirectFlight;
 import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
@@ -12,10 +11,13 @@ import airport.Models.Entities.Plane;
 import airport.Models.Observable.DataObserver;
 import airport.Models.Observable.PassengerRepository;
 import airport.controllers.utils.Parsers;
+import airport.controllers.utils.Response;
+import airport.controllers.utils.Status;
 import java.awt.Color;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -36,21 +38,14 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private PassengerRepository passengerRepository;
     public AirportFrame() {
         initComponents();
-
-        this.passengers = new ArrayList<>();
-        this.planes = new ArrayList<>();
-        this.locations = new ArrayList<>();
-        this.flights = new ArrayList<>();
-
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
-
         this.generateMonths();
         this.generateDays();
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
-        
+
     }
     public void setPassengerRepository(PassengerRepository passengerRepository) {
     this.passengerRepository = passengerRepository;
@@ -68,6 +63,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         });
     }
     }
+
     private void blockPanels() {
         //9, 11
         for (int i = 1; i < views.getTabCount(); i++) {
@@ -110,7 +106,6 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             delayMinute.addItem("" + i);
         }
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1432,7 +1427,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
         }
         for (int i = 1; i < views.getTabCount(); i++) {
-                views.setEnabledAt(i, true);
+            views.setEnabledAt(i, true);
         }
         views.setEnabledAt(5, false);
         views.setEnabledAt(6, false);
@@ -1475,23 +1470,23 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
     private void fieldCreateAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldCreateAirplaneActionPerformed
         try {
-        String id = fieldIDairplane.getText();
-        String brand = fieldBrand.getText();
-        String model = fieldModel.getText();
-        int maxCapacity = Parsers.INTEGER.parse(fieldMaxCapacity.getText());
-        String airline = fieldAirline.getText();
+            String id = fieldIDairplane.getText();
+            String brand = fieldBrand.getText();
+            String model = fieldModel.getText();
+            int maxCapacity = Parsers.INTEGER.parse(fieldMaxCapacity.getText());
+            String airline = fieldAirline.getText();
 
-        this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
+            this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
 
-        this.planeFlightR.addItem(id);
+            this.planeFlightR.addItem(id);
         } catch (Exception e) {
-    JOptionPane.showMessageDialog(this, "Error en los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-}
+            JOptionPane.showMessageDialog(this, "Error en los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_fieldCreateAirplaneActionPerformed
 
     private void btCreateLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateLocationActionPerformed
         // TODO add your handling code here:
-       try {
+        try {
             String id = fieldAirportID.getText();
             String name = fieldAirportName.getText();
             String city = fieldAirportCity.getText();
@@ -1505,30 +1500,30 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             this.locationArrival.addItem(id);
             this.locationScale.addItem(id);
 
-} catch (Exception e) {
-    JOptionPane.showMessageDialog(this, "Error en los datos del aeropuerto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error en los datos del aeropuerto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_btCreateLocationActionPerformed
 
     private void btCreateFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateFlightActionPerformed
-        
+
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
-  
+
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
-        
+
     }//GEN-LAST:event_btAddFlightActionPerformed
 
     private void btDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelayActionPerformed
-        
+
     }//GEN-LAST:event_btDelayActionPerformed
 
     private void btRefreshMyFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshMyFlightsActionPerformed
-        
+
     }//GEN-LAST:event_btRefreshMyFlightsActionPerformed
 
     private void btRefreshPassengersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshPassengersActionPerformed
@@ -1545,7 +1540,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
         model.setRowCount(0);
         for (Flight flight : this.flights) {
-           
+
         }
     }//GEN-LAST:event_refreshAllFlightsActionPerformed
 
@@ -1574,11 +1569,10 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
         try {
             String id = userSelect.getSelectedItem().toString();
-            if (! id.equals(userSelect.getItemAt(0))) {
+            if (!id.equals(userSelect.getItemAt(0))) {
                 fieldIDupdate.setText(id);
                 fieldIDaddTFlight.setText(id);
-            }
-            else{
+            } else {
                 fieldIDupdate.setText("");
                 fieldIDaddTFlight.setText("");
             }

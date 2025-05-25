@@ -28,12 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.UIManager;
 
+
 /**
  *
  * @author yader
  */
 public class Main {
-    public static void main(String args[]) {
+
+    public static void main(String args[]) throws IOException {
+        
         System.setProperty("flatlaf.useNativeLibrary", "false");
 
         try {
@@ -93,4 +96,3 @@ public class Main {
         });
     }
 }
-

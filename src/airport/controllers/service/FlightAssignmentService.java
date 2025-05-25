@@ -32,10 +32,6 @@ public class FlightAssignmentService {
             .findFirst()
             .orElse(null);
 
-        if (flight == null) {
-            return new Response("Vuelo no encontrado", Status.NOT_FOUND);
-        }
-
         flight.getPassengerList().addPassenger(passenger);
         passenger.getFlights().add(flight);
         storage. getFlightLoader().saveFlights(flights);

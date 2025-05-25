@@ -30,29 +30,22 @@ public class PassengerController extends ObservableBase {
         this.storage = storage;
     }
 
-    public Response registerPassenger(
-    String idText,
-    String name,
-    String lastname,
-    String yearText,
-    String monthText,
-    String dayText,
-    String phoneCodeText,
-    String phoneText,
-    String country
-) {
+    public Response registerPassenger( String idText, String name,String lastname,String yearText, String monthText,String dayText, String phoneCodeText,
+    String phoneText, String country) 
+        {
     try {
+        
         Passenger passenger = PassengerDataParser.parse(
             idText, name, lastname, yearText, monthText, dayText, phoneCodeText, phoneText, country
         );
-
         PassengerRegistrationService service = new PassengerRegistrationService(passengers, storage);
         return service.register(passenger);
 
     } catch (Exception e) {
         return new Response("Error al procesar datos de pasajero: " + e.getMessage(), Status.BAD_REQUEST);
     }
-}
+
+   
 
     public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate, int phoneCode, long phone, String country) throws IOException {
         Passenger passenger = passengers.get(id);
