@@ -12,26 +12,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class JSONStorage   {
-    private final PlaneDataLoader planeLoader; 
-    private final LocationDataLoader locationLoader; 
-    private final PassengerDataLoader passengerLoader; 
-    private final FlightDataLoader flightLoader; 
+    public class JSONStorage   {
+        private final PlaneDataLoader planeLoader; 
+        private final LocationDataLoader locationLoader; 
+        private final PassengerDataLoader passengerLoader; 
+        private final FlightDataLoader flightLoader; 
 
-    public JSONStorage(PlaneDataLoader planeLoader, LocationDataLoader locationLoader, PassengerDataLoader passengerLoader, FlightDataLoader flightLoader) {
-        this.planeLoader = planeLoader;
-        this.locationLoader = locationLoader;
-        this.passengerLoader = passengerLoader;
-        this.flightLoader = flightLoader;
-    }
-    
-    
-    public LoadedData loadAll() throws IOException{
-        Map<String, Plane> planes = planeLoader.loadPlanes();
-        Map<String, Location> locations = locationLoader.loadLocations();
-        Map<Long, Passenger> passengers = passengerLoader.loadPassengers();
-        List<Flight> flights = flightLoader.loadFlights();
-        return new LoadedData(planes, locations, passengers, flights);
+        public JSONStorage(PlaneDataLoader planeLoader, LocationDataLoader locationLoader, PassengerDataLoader passengerLoader, FlightDataLoader flightLoader) {
+            this.planeLoader = planeLoader;
+            this.locationLoader = locationLoader;
+            this.passengerLoader = passengerLoader;
+            this.flightLoader = flightLoader;
+        }
+
+
+        public LoadedData loadAll() throws IOException{
+            Map<String, Plane> planes = planeLoader.loadPlanes();
+            Map<String, Location> locations = locationLoader.loadLocations();
+            Map<Long, Passenger> passengers = passengerLoader.loadPassengers();
+            List<Flight> flights = flightLoader.loadFlights();
+            return new LoadedData(planes, locations, passengers, flights);
     }
 
     public PlaneDataLoader getPlaneLoader() {

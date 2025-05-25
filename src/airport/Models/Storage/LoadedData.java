@@ -27,6 +27,21 @@ public class LoadedData {
         this.passengers = passengers;
         this.flights = flights;
     }
-    
-    
+
+    public Map<String, Plane> getPlanes() {
+        return planes;
+    }
+
+    public Map<String, Location> getLocations() {
+        return locations;
+    }
+
+    public Map<Long, Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public List<Flight> getFlights() {
+        return flights;
+    }
 }
+

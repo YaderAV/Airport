@@ -10,6 +10,7 @@ import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.Models.Observable.DataObserver;
+import airport.Models.Observable.PassengerRepository;
 import airport.controllers.utils.Parsers;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private ArrayList<Plane> planes;
     private ArrayList<Location> locations;
     private ArrayList<Flight> flights;
+    private PassengerRepository passengerRepository;
     public AirportFrame() {
         initComponents();
 
@@ -50,10 +52,21 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         this.blockPanels();
         
     }
+    public void setPassengerRepository(PassengerRepository passengerRepository) {
+    this.passengerRepository = passengerRepository;
+}
+
     
     @Override
     public void onDataChanged() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+    model.setRowCount(0);
+
+    for (Passenger p : passengerRepository.getAllPassengers()) {
+        model.addRow(new Object[]{
+            p.getId(), p.getFullname(), p.getBirthDate(), p.getAge(), p.getFullPhone(), p.getCountry(), p.getNumberFlights()
+        });
+    }
     }
     private void blockPanels() {
         //9, 11
@@ -1442,23 +1455,22 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     }//GEN-LAST:event_userActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-        try {
-        long id = Parsers.LONG.parse(fieldIDpassenger.getText());
-        String firstname = fieldFirstName.getText();
-        String lastname = fieldLastName.getText();
+    String idText = fieldIDpassenger.getText();
+    String firstname = fieldFirstName.getText();
+    String lastname = fieldLastName.getText();
+    String yearText = fieldYear.getText();
+    String monthText = monthPassengerR.getSelectedItem().toString();
+    String dayText = dayPassengerR.getSelectedItem().toString();
+    String phoneCodeText = fieldPreFix.getText();
+    String phoneText = fieldPhone.getText();
+    String country = fieldCountry.getText();
 
-        int year = Parsers.INTEGER.parse(fieldYear.getText());
-        int month = Parsers.INTEGER.parse(monthPassengerR.getItemAt(monthPassengerR.getSelectedIndex()));
-        int day = Parsers.INTEGER.parse(dayPassengerR.getItemAt(dayPassengerR.getSelectedIndex()));
-        int phoneCode = Parsers.INTEGER.parse(fieldPreFix.getText());
-        long phone = Parsers.LONG.parse(fieldPhone.getText());
-        String country = fieldCountry.getText();
-        LocalDate birthDate = LocalDate.of(year, month, day);
-        this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
-        this.userSelect.addItem("" + id);
-          } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al registrar pasajero: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+    passengerRepository.createPassengerFromRawData(
+        idText, firstname, lastname, yearText, monthText, dayText, phoneCodeText, phoneText, country
+    );
+        this.userSelect.addItem("" + idText);
+        
+
     }//GEN-LAST:event_btRegisterActionPerformed
 
     private void fieldCreateAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldCreateAirplaneActionPerformed
