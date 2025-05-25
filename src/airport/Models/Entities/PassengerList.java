@@ -6,7 +6,6 @@ package airport.Models.Entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import airport.Models.Entities.Passenger;
 
 /**
          *

@@ -10,7 +10,7 @@ import airport.Models.Observable.ObservableBase;
 import airport.controllers.service.PassengerRegistrationService;
 import airport.controllers.service.PassengerUpdateService;
 import airport.Models.Storage.JSONStorage;
-import airport.controllers.utils.PassengerDataParser;
+import airport.controllers.utils.parser.PassengerDataParser;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author yader
  */
-public class PassengerController extends ObservableBase {
+public class PassengerController  {
 
     private final Map<Long, Passenger> passengers;
     private final JSONStorage storage;
@@ -36,8 +36,16 @@ public class PassengerController extends ObservableBase {
         this.flights = flights;
     }
 
-    public Response registerPassenger( String idText, String name,String lastname,String yearText, String monthText,String dayText, String phoneCodeText,
-    String phoneText, String country) 
+    public Response registerPassenger( 
+            String idText, 
+            String name,
+            String lastname,
+            String yearText, 
+            String monthText,
+            String dayText, 
+            String phoneCodeText,
+            String phoneText, 
+            String country) 
         {
     try {
         

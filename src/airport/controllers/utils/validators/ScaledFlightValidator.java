@@ -5,7 +5,6 @@
 package airport.controllers.utils.validators;
 
 import airport.Models.Entities.Flights.ScaledFlight;
-import airport.controllers.utils.Validator;
 import java.time.LocalDateTime;
 
 /**

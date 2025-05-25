@@ -4,17 +4,16 @@
  */
 package airport.controllers;
 import airport.Models.Entities.Flights.Flight;
-import airport.Models.Entities.Flights.FlightSchedule;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.controllers.service.FlightDelayService;
 import airport.controllers.service.FlightCreationService;
 import airport.controllers.service.FlightAssignmentService;
-import airport.Models.Observable.ObservableBase;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import airport.Models.Storage.JSONStorage;
+import airport.controllers.utils.parser.FlightDataParser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,12 +35,29 @@ public class FlightController {
         System.out.println("DEBUG - flights: " + flights);
     }
 
-    public Response createFlight(String id, Plane plane, Location departureLocation, Location scaleLocation, Location arrivalLocation, FlightSchedule flightSchedule) throws IOException {
+    public Response createFlight(String id,
+            String planeId,
+            String departureId,
+            String arrivalId,
+            String scaleId,
+            String yearStr,
+            String monthStr,
+            String dayStr,
+            String hourStr,
+            String minuteStr,
+            String hoursArrivalStr,
+            String minutesArrivalStr,
+            String hoursScaleStr,
+            String minutesScaleStr,
+            Map<String, Plane> planes,
+            Map<String, Location> locations) throws IOException {
+        Flight flight = FlightDataParser.Parse(id, planeId, departureId, arrivalId, scaleId, yearStr, monthStr, dayStr, hourStr, minuteStr, hoursArrivalStr, minutesArrivalStr, hoursScaleStr, minutesScaleStr, planes, locations);
         FlightCreationService service = new FlightCreationService(flights, storage);
-        Response response = service.create(id, plane, departureLocation, scaleLocation, arrivalLocation, flightSchedule);
+        Response response = service.create(flight);
         if (response.getStatus() == Status.CREATED) {
             sortFlights();
         }
+
         return response;
     }
 public Response addPassengerToFlight(Passenger passenger, String flightID) throws IOException {

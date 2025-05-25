@@ -5,7 +5,6 @@
 package airport.Models.Observable;
 
 import java.util.ArrayList;
-import airport.Models.Observable.DataObserver;
 /**
  *
  * @author yader
