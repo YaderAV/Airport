@@ -46,6 +46,15 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private PlaneRepository planeRepository;
     public AirportFrame() {
         initComponents();
+        views.addChangeListener(e -> {
+        int selectedIndex = views.getSelectedIndex();
+        String selectedTabTitle = views.getTitleAt(selectedIndex);
+
+        if (selectedTabTitle.equals("Add to flight")) {
+            cargarVuelosEnComboBox();
+        }
+});
+
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
         this.generateMonths();
@@ -94,6 +103,19 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         });
     }
 }
+  private void cargarVuelosEnComboBox() {
+    showFlightsButton.removeAllItems();
+    showFlightsButton.addItem("Select Flight");  // Item por defecto
+
+    for (Flight f : flightRepository.getAllFlights()) {
+        String info = f.getId() + " (" + f.getDepartureLocation().getAirportID() + " ➔ " + f.getArrivalLocation().getAirportID() + ")";
+        showFlightsButton.addItem(info);
+    }
+
+    System.out.println("DEBUG - Vuelos cargados: " + showFlightsButton.getItemCount());
+}
+
+
     
 private void updateMyFlightsTable(long passengerId) {
     DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
@@ -342,7 +364,7 @@ private void updateLocationTable() {
         fieldIDaddTFlight = new javax.swing.JTextField();
         jLabel44 = new javax.swing.JLabel();
         jLabel45 = new javax.swing.JLabel();
-        addFlightB = new javax.swing.JComboBox<>();
+        showFlightsButton = new javax.swing.JComboBox<>();
         btAddFlight = new javax.swing.JButton();
         showMyFlightsPanel = new javax.swing.JPanel();
         viewMyFlights = new javax.swing.JScrollPane();
@@ -1076,8 +1098,13 @@ private void updateLocationTable() {
         jLabel45.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel45.setText("Flight:");
 
-        addFlightB.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        addFlightB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Flight" }));
+        showFlightsButton.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        showFlightsButton.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Flight" }));
+        showFlightsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showFlightsButtonActionPerformed(evt);
+            }
+        });
 
         btAddFlight.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         btAddFlight.setText("Add");
@@ -1098,7 +1125,7 @@ private void updateLocationTable() {
                     .addComponent(jLabel45))
                 .addGap(79, 79, 79)
                 .addGroup(addToFlightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addFlightB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showFlightsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fieldIDaddTFlight, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(828, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addToFlightPanelLayout.createSequentialGroup()
@@ -1118,7 +1145,7 @@ private void updateLocationTable() {
                 .addGap(35, 35, 35)
                 .addGroup(addToFlightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel45)
-                    .addComponent(addFlightB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(showFlightsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 288, Short.MAX_VALUE)
                 .addComponent(btAddFlight, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(85, 85, 85))
@@ -1634,7 +1661,34 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
+         
+        try {
+        String passengerID = fieldIDaddTFlight.getText();
+        String flightID = showFlightsButton.getSelectedItem().toString();
 
+        if (passengerID == null || passengerID.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un pasajero.");
+            return;
+        }
+
+        if (flightID == null || flightID.equals("Flight")) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un vuelo válido.");
+            return;
+        }
+
+        // Llamada al repositorio/controlador (solo pasando IDs)
+        Passenger passenger = passengerRepository.getPassengerById(passengerID);
+        String flightId = flightRepository.extractFlightID(flightID);
+        flightRepository.addPassengerToFlight(flightId, passenger);
+
+        JOptionPane.showMessageDialog(this, "Pasajero agregado correctamente al vuelo.");
+        updatePassengerTable();
+        updateFlightTable();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error al agregar pasajero al vuelo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btAddFlightActionPerformed
 
     private void btDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelayActionPerformed
@@ -1710,8 +1764,24 @@ private void updateLocationTable() {
 
     }//GEN-LAST:event_userSelectActionPerformed
 
+    private void showFlightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showFlightsButtonActionPerformed
+    try {
+        String selected = showFlightsButton.getSelectedItem().toString();
+
+        if (!selected.equals("Select Flight")) { // Validar que no sea el item por defecto
+            System.out.println("Vuelo seleccionado: " + selected);
+            // Aquí puedes hacer lo que necesites con el vuelo seleccionado
+        } else {
+            System.out.println("Selecciona un vuelo válido");
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    }//GEN-LAST:event_showFlightsButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> addFlightB;
     private javax.swing.JPanel addToFlightPanel;
     private javax.swing.JPanel administrationPanel;
     private javax.swing.JRadioButton administrator;
@@ -1834,6 +1904,7 @@ private void updateLocationTable() {
     private javax.swing.JPanel showAllLocationsPanel;
     private javax.swing.JPanel showAllPassengersPanel;
     private javax.swing.JPanel showAllPlanesPanel;
+    private javax.swing.JComboBox<String> showFlightsButton;
     private javax.swing.JPanel showMyFlightsPanel;
     private javax.swing.JTable tableAllFlights;
     private javax.swing.JTable tableLocations;

@@ -26,16 +26,42 @@ public class FlightAssignmentService {
         this.storage = storage;
     }
 
-    public Response assignPassenger(Passenger passenger, String flightID) throws IOException {
-        Flight flight = flights.stream()
-            .filter(f -> f.getId().equals(flightID))
-            .findFirst()
-            .orElse(null);
+public Response assignPassenger(Passenger passenger, String flightID) throws IOException {
+    System.out.println("\n==== DEBUG: Iniciando asignación de pasajero ====");
+    System.out.println("DEBUG: Buscando vuelo con ID: " + flightID);
+    System.out.println("DEBUG: Lista de vuelos disponibles:");
 
-        flight.getPassengerList().addPassenger(passenger);
-        passenger.getFlights().add(flight);
-        storage. getFlightLoader().saveFlights(flights);
-
-        return new Response("Pasajero añadido al vuelo", Status.OK, flight);
+    // Imprimir todos los IDs de vuelos en la lista
+    for (Flight f : flights) {
+        System.out.println("DEBUG: Vuelo encontrado - ID: " + f.getId());
     }
+
+    // Buscar el vuelo
+    Flight flight = flights.stream()
+        .filter(f -> f.getId().equals(flightID))
+        .findFirst()
+        .orElse(null);
+
+    if (flight == null) {
+        System.out.println("DEBUG: Vuelo NO encontrado con ID: " + flightID);
+        return new Response("Vuelo no encontrado con ID: " + flightID, Status.NOT_FOUND);
+    }
+
+    System.out.println("DEBUG: Vuelo ENCONTRADO: " + flight.getId());
+    System.out.println("DEBUG: Pasajero a agregar: " + passenger.getId() + " - " + passenger.getFullname());
+
+    // Agregar pasajero al vuelo
+    flight.getPassengerList().addPassenger(passenger);
+    passenger.getFlights().add(flight);
+
+    System.out.println("DEBUG: Pasajero agregado al vuelo correctamente.");
+    System.out.println("DEBUG: Guardando vuelos en el almacenamiento...");
+
+    storage.getFlightLoader().saveFlights(flights);
+
+    System.out.println("==== DEBUG: Asignación finalizada ====\n");
+
+    return new Response("Pasajero añadido al vuelo", Status.OK, flight);
+}
+
 }

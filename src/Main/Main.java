@@ -30,6 +30,7 @@ import airport.controllers.PlaneController;
 import airport.views.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.UIManager;
@@ -84,7 +85,7 @@ public class Main {
                         LoadedData loadedData = storage.loadAll();
                         LocationController locationController = new LocationController(locationsMap, storage);
                         PlaneController planeController = new PlaneController(planesMap, storage);
-                        PassengerController passengerController = new PassengerController(passengerMap, storage);
+                        PassengerController passengerController = new PassengerController(passengerMap, storage,  new ArrayList<>());
                         FlightController flightController = new FlightController(locationsMap, planesMap, passengerMap, storage);
                         PassengerRepository passengerRepository = new PassengerRepository(passengerController);
                         FlightRepository flightRepository = new FlightRepository(flightController);
