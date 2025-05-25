@@ -28,7 +28,7 @@ public class LocationCreationService {
     }
 
     public Response create(Location location) throws IOException {
-        LocationValidator validator = new LocationValidator();
+        LocationValidator validator = new LocationValidator(locations);
         ValidationResult validation = validator.validate(location);
 
         if (!validation.isValid()) {

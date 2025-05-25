@@ -33,7 +33,12 @@ public class PassengerController extends ObservableBase {
         try {
             Passenger passenger = new Passenger(id, name, lastname, birthDate, phoneCode, phone, country);
             PassengerRegistrationService service = new PassengerRegistrationService(passengers, storage);
-            return service.register(passenger);
+            if(service.register(passenger).getStatus() == Status.CREATED){
+                return service.register(passenger);
+            }else{
+                return new Response(service.register(passenger).getMessage(),Status.BAD_REQUEST);
+            }
+            
 
         } catch (Exception e) {
             return new Response("Error al registrar pasajero: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);

@@ -31,9 +31,9 @@ public class PassengerRegistrationService {
         ValidationResult validation = validator.validate(passenger);
 
         if (!validation.isValid()) {
-            return new Response(validation.getCombinedMessage(), Status.BAD_REQUEST);
+            return new Response(validation.getCombinedMessage()+"\n", Status.BAD_REQUEST);
         }
-
+        
         passengers.put(passenger.getId(), passenger);
         storage. getPassengerLoader().savePassengers(passengers);
         return new Response("Pasajero registrado correctamente", Status.CREATED, passenger);

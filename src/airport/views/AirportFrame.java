@@ -1516,7 +1516,10 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             long phone = Parsers.LONG.parse(fieldPhone.getText());
             String country = fieldCountry.getText();
             LocalDate birthDate = LocalDate.of(year, month, day);
-            this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
+            Response res = passengerController.registerPassenger(id, firstname, lastname, birthDate, phoneCode, phone, country);
+            if(res.getStatus() != Status.CREATED){
+               JOptionPane.showMessageDialog(this, "Error al registrar al pasajero: " + res.getMessage());
+            }
             this.userSelect.addItem("" + id);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al registrar pasajero: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

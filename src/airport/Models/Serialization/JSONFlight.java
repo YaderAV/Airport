@@ -48,6 +48,9 @@ public class JSONFlight implements JSONMapper<Flight> {
             json.put("scaleLocation", sf.getScale().getAirportID()); 
         }else {
         json.put("scaleLocation", JSONObject.NULL);
+        json.put("hoursDurationScale", 0);
+        json.put("minutesDurationScale", 0);
+        
         }
         return json;
     }
