@@ -8,7 +8,10 @@ import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
+import airport.Models.Observable.FlightRepository;
+import airport.Models.Observable.LocationRepository;
 import airport.Models.Observable.PassengerRepository;
+import airport.Models.Observable.PlaneRepository;
 import airport.Models.Serialization.JSONFlight;
 import airport.Models.Serialization.JSONLocation;
 import airport.Models.Serialization.JSONMapper;
@@ -20,7 +23,10 @@ import airport.Models.Storage.DataLoaders.PassengerDataLoader;
 import airport.Models.Storage.DataLoaders.PlaneDataLoader;
 import airport.Models.Storage.JSONStorage;
 import airport.Models.Storage.LoadedData;
+import airport.controllers.FlightController;
+import airport.controllers.LocationController;
 import airport.controllers.PassengerController;
+import airport.controllers.PlaneController;
 import airport.views.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.io.IOException;
@@ -76,13 +82,27 @@ public class Main {
 
                     try {
                         LoadedData loadedData = storage.loadAll();
+                        LocationController locationController = new LocationController(locationsMap, storage);
+                        PlaneController planeController = new PlaneController(planesMap, storage);
                         PassengerController passengerController = new PassengerController(passengerMap, storage);
+                        FlightController flightController = new FlightController(locationsMap, planesMap, passengerMap, storage);
                         PassengerRepository passengerRepository = new PassengerRepository(passengerController);
+                        FlightRepository flightRepository = new FlightRepository(flightController);
+                        LocationRepository locationRepository  =  new LocationRepository(locationController);
+                        PlaneRepository planeRepository  =  new PlaneRepository(planeController);
                         AirportFrame airportFrame = new AirportFrame();
                         passengerRepository.addObserver(airportFrame);
+                        airportFrame.setFlightRepository(flightRepository);
                         airportFrame.setPassengerRepository(passengerRepository);
+                         airportFrame.setLocationRepository(locationRepository);
+                          airportFrame.setPlaneRepository(planeRepository);
                         airportFrame.onDataChanged(); 
                         airportFrame.setVisible(true);
+                        passengerRepository.notifyObservers();
+                        planeRepository.notifyObservers();
+                        locationRepository.notifyObservers();
+                        flightRepository.notifyObservers();
+
                     } catch (IOException e) {
                         System.out.println("Error al cargar datos: " + e.getMessage());
                     }

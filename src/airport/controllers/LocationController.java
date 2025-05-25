@@ -40,4 +40,9 @@ public class LocationController extends ObservableBase {
             return new Response("Error al registrar localización: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+   public Response getAllLocations() {
+    return new Response("Lista de locations obtenida.", Status.OK, locations);
+}
+
 }

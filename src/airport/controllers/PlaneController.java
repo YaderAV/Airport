@@ -43,13 +43,15 @@ public class PlaneController extends ObservableBase {
         }
     }
 
-    public Map<String, Plane> getPlanes() {
-        return planes;
-    }
+   public Response getAllPlanes() {
+    return new Response("Lista de aviones obtenida.", 200, new ArrayList<>(planes.values()));
+}
 
     public JSONStorage getStorage() {
         return storage;
     }
+
+ 
     
 }
 

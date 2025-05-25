@@ -5,7 +5,10 @@
 package airport.Models.Observable;
 
 import airport.Models.Entities.Flights.Flight;
+import airport.controllers.FlightController;
+import airport.controllers.utils.Response;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -15,21 +18,36 @@ import java.util.List;
 public class FlightRepository extends ObservableBase {
 
     private final List<Flight> flights = new ArrayList();
+    private final FlightController flightController;
 
-    public void addFlight(Flight flight) {
-        flights.add(flight);
-        for (int i = 0; i < flights.size() - 1; i++) {
-            for (int j = i + 1; j < flights.size(); j++) {
-                if(flights.get(i).getSchedule().getDepartureDate().isAfter(flights.get(j).getSchedule().getDepartureDate())){
-                    Flight temp = flights.get(j);
-                    flights.set(j, flights.get(i));
-                    flights.set(i, temp);
-                }
-            }
+    public FlightRepository(FlightController flightController) {
+        this.flightController = flightController;
+    }
+
+  public ArrayList<Flight> getAllFlights() {
+    Response response = flightController.getAllFlights();
+    if (response.getStatus() == 200) {
+        List<Flight> flightsList = (List<Flight>) response.getData();
+         System.out.println("DEBUG - Response data de getallflights" +response.getData() );
+        if (flightsList != null) {
+            flights.clear();
+            flights.addAll(flightsList);
+            notifyObservers();
+            return new ArrayList<>(flights);
+        } else {
+            System.out.println("DEBUG - Response.getObject() es null");
+            return new ArrayList<>();
         }
-        notifyObservers();
+    } else {
+        System.out.println("Error al obtener vuelos: " + response.getMessage());
+        return new ArrayList<>();
     }
-    public ArrayList<Flight> getAllFlights(){
-        return new ArrayList<>(flights);
-    }
+}
+
+    public List<Flight> getFlightsByPassengerId(long passengerId) {
+    return flightController.getFlightsByPassengerId(passengerId);
+}
+
+
+   
 }

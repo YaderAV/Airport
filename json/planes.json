@@ -1,11 +1,12 @@
 [
-    {
+     {
         "id": "AB12345",
         "brand": "Boeing",
         "model": "737 MAX",
         "maxCapacity": 210,
         "airline": "American Airlines"
     },
+
     {
         "id": "CD67890",
         "brand": "Airbus",
