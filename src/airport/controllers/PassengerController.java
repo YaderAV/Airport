@@ -44,7 +44,7 @@ public class PassengerController extends ObservableBase {
     } catch (Exception e) {
         return new Response("Error al procesar datos de pasajero: " + e.getMessage(), Status.BAD_REQUEST);
     }
-
+        }
    
 
     public Response updatePassenger(long id, String name, String lastName, LocalDate birthDate, int phoneCode, long phone, String country) throws IOException {
