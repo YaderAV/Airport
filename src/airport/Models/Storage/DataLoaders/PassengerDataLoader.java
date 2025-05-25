@@ -24,7 +24,7 @@ public class PassengerDataLoader implements PassengerStorage {
     private final String path;
     private final JSONMapper<Passenger> mapper;
 
-    public PassengerDataLoader(String path, JSONMapper<Passenger> mapper) {
+    public PassengerDataLoader( JSONMapper<Passenger> mapper,String path) {
         this.path = path;
         this.mapper = mapper;
     }

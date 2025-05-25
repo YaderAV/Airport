@@ -42,5 +42,14 @@ public class PlaneController extends ObservableBase {
             return new Response("Error al registrar avión: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Map<String, Plane> getPlanes() {
+        return planes;
+    }
+
+    public JSONStorage getStorage() {
+        return storage;
+    }
+    
 }
 
