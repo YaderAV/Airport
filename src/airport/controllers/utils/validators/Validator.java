@@ -4,11 +4,10 @@
  */
 package airport.controllers.utils.validators;
 
-import airport.controllers.utils.validators.ValidationResult;
-
 /**
  *
  * @author yader
+ * @param <T>
  */
 public interface Validator<T> {
     ValidationResult validate (T entitie);

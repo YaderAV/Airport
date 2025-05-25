@@ -4,7 +4,6 @@
  */
 package airport.controllers.utils.parser;
 
-import airport.controllers.utils.parser.Parsers;
 import airport.Models.Entities.Location;
 
 /**

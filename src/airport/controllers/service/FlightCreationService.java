@@ -4,12 +4,7 @@
  */
 package airport.controllers.service;
 
-import airport.Models.Entities.Flights.DirectFlight;
 import airport.Models.Entities.Flights.Flight;
-import airport.Models.Entities.Flights.FlightSchedule;
-import airport.Models.Entities.Flights.ScaledFlight;
-import airport.Models.Entities.Location;
-import airport.Models.Entities.Plane;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.validators.FlightValidator;
 import airport.controllers.utils.Response;
@@ -32,7 +27,6 @@ public class FlightCreationService {
     }
 
     public Response create(Flight flight) throws IOException {
-
         FlightValidator validator = new FlightValidator(flights);
         ValidationResult validation = validator.validate(flight);
         if (!validation.isValid()) {

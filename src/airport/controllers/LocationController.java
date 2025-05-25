@@ -6,8 +6,6 @@ package airport.controllers;
 
 import airport.Models.Entities.Location;
 import airport.controllers.service.LocationCreationService;
-import airport.Models.Observable.ObservableBase;
-import airport.Models.Storage.DataLoaders.LocationDataLoader;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
@@ -18,7 +16,7 @@ import java.util.Map;
  *
  * @author yader
  */
-public class LocationController extends ObservableBase {
+public class LocationController {
   private final Map<String, Location> locations;
   private final JSONStorage storage;
 
@@ -39,11 +37,6 @@ public class LocationController extends ObservableBase {
             Location location = LocationsDataParser.Parse(IDAirportText, nameAirportText, cityAirportText, countryAirportText, latitudeAirportText, longitudeAirportText);
             LocationCreationService service = new LocationCreationService(locations, storage);
             Response response = service.create(location);
-
-            if (response.getStatus() == Status.CREATED) {
-                notifyObservers(); 
-            }
-
             return response;
         } catch (Exception e) {
             return new Response("Error al registrar localización: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);

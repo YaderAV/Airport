@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author yader
  */
-public class PlaneController extends ObservableBase {
+public class PlaneController {
 
     private final Map<String, Plane> planes;
     private final JSONStorage storage;
@@ -40,10 +40,6 @@ public class PlaneController extends ObservableBase {
             PlaneRegistrationService service;
             service = new PlaneRegistrationService(planes, storage);
             Response response = service.register(plane);
-
-            if (response.getStatus() == Status.CREATED) {
-                notifyObservers();
-            }
             return response;
         } catch (Exception e) {
             return new Response("Error al registrar avión: " + e.getMessage(), Status.INTERNAL_SERVER_ERROR);

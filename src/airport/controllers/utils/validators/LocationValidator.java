@@ -5,7 +5,6 @@
 package airport.controllers.utils.validators;
 
 import airport.Models.Entities.Location;
-import airport.Models.Entities.Passenger;
 import java.util.Map;
 
 /**

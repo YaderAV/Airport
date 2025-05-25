@@ -4,14 +4,12 @@
  */
 package airport.controllers;
 import airport.Models.Entities.Flights.Flight;
-import airport.Models.Entities.Flights.FlightSchedule;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.controllers.service.FlightDelayService;
 import airport.controllers.service.FlightCreationService;
 import airport.controllers.service.FlightAssignmentService;
-import airport.Models.Observable.ObservableBase;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import airport.Models.Storage.JSONStorage;
@@ -28,7 +26,7 @@ import java.util.Map;
  */
 
 
-public class FlightController extends ObservableBase {
+public class FlightController {
     private final List<Flight> flights;
     private final JSONStorage storage;
   
@@ -59,7 +57,6 @@ public class FlightController extends ObservableBase {
         FlightCreationService service = new FlightCreationService(flights, storage);
         Response response = service.create(flight);
         if (response.getStatus() == Status.CREATED) {
-            notifyObservers();
             sortFlights();
         }
 

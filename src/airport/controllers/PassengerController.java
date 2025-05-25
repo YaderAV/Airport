@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author yader
  */
-public class PassengerController extends ObservableBase {
+public class PassengerController  {
 
     private final Map<Long, Passenger> passengers;
     private final JSONStorage storage;
@@ -30,8 +30,16 @@ public class PassengerController extends ObservableBase {
         this.storage = storage;
     }
 
-    public Response registerPassenger( String idText, String name,String lastname,String yearText, String monthText,String dayText, String phoneCodeText,
-    String phoneText, String country) 
+    public Response registerPassenger( 
+            String idText, 
+            String name,
+            String lastname,
+            String yearText, 
+            String monthText,
+            String dayText, 
+            String phoneCodeText,
+            String phoneText, 
+            String country) 
         {
     try {
         

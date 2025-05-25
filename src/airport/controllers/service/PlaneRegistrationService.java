@@ -11,7 +11,6 @@ import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import airport.controllers.utils.validators.ValidationResult;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**

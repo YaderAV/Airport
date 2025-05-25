@@ -5,10 +5,7 @@
 package airport.Models.Entities.Flights;
 
 import airport.Models.Entities.Location;
-import airport.Models.Entities.Passenger;
-import airport.Models.Entities.PassengerList;
 import airport.Models.Entities.Plane;
-import java.util.ArrayList;
 
 /**
  *

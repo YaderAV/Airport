@@ -7,7 +7,6 @@ package airport.Models.Observable;
 import airport.Models.Entities.Location;
 import airport.controllers.LocationController;
 import airport.controllers.utils.Response;
-import airport.controllers.utils.Status;
 import java.util.ArrayList;
 import java.util.Map;
 
