@@ -110,15 +110,7 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
     }
     
     public List<Flight> getFlightsByPassengerId(long passengerId) {
-<<<<<<< HEAD
-        List<Flight> passengerFlights = new ArrayList<>();
-        for (Flight flight : flights) { 
-           for (Passenger p : flight.getPassengerList().getPassengers()) {
-                if (p.getId() == passengerId) {
-                    passengerFlights.add(flight);
-                    break;
-                }
-=======
+
     System.out.println("DEBUG - Iniciando búsqueda de vuelos para el pasajero con ID: " + passengerId);
 
     List<Flight> passengerFlights = new ArrayList<>();
@@ -126,7 +118,7 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
     for (Flight flight : flights) {
         System.out.println("DEBUG - Revisando vuelo: " + flight.getId());
 
-        List<Passenger> passengers = flight.getPassengerList().getPassenger();
+        List<Passenger> passengers = flight.getPassengerList().getPassengers();
         System.out.println("DEBUG - Pasajeros en el vuelo " + flight.getId() + ":");
         for (Passenger p : passengers) {
             System.out.println("    -> " + p.getId() + " - " + p.getFullname());
@@ -135,7 +127,6 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
                 System.out.println(">>> MATCH ENCONTRADO: Pasajero " + p.getId() + " está en el vuelo " + flight.getId());
                 passengerFlights.add(flight);
                 break;
->>>>>>> dd86bbdf6f66b0d7abd13720b322818d849d3d6c
             }
         }
     }
