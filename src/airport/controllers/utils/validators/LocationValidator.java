@@ -22,7 +22,7 @@ public class LocationValidator implements Validator<Location> {
     @Override
     public ValidationResult validate(Location l) {
         ValidationResult result = new ValidationResult();
-        if (l.getAirportID() == null || !l.getAirportID().matches("[A-Z]d{3}")) {
+        if (l.getAirportID() == null || !l.getAirportID().matches("^[A-Z]{3}$")) {
             result.addError("El ID del aeropuerto debe tener 3 letras mayúsculas");
         }
         if(existingLocations.containsKey(l.getAirportID())) result.addError("Ya existe un aeropuerto con ese ID");

@@ -28,7 +28,7 @@
     {
         "plane": "EF11223",
         "minutesDurationScale": 45,
-        "passengers": [],
+        "passengers": [988415236],
         "departureLocation": "MEX",
         "scaleLocation": "JFK",
         "minutesDurationArrival": 20,

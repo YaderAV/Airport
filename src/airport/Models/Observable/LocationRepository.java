@@ -7,6 +7,7 @@ package airport.Models.Observable;
 import airport.Models.Entities.Location;
 import airport.controllers.LocationController;
 import airport.controllers.utils.Response;
+import airport.controllers.utils.Status;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -35,5 +36,24 @@ public class LocationRepository extends ObservableBase {
            return new ArrayList<>();
        }
    }
+    public Response createLocationFromRawData(String id, String name, String city, String country, String latitudeStr, String longitudeStr) {
+    try {
+        // Llamar al controlador para procesar los datos
+        Response response = locationController.createLocation(id, name, city, country, latitudeStr, longitudeStr);
+
+        if (response.getStatus() == Status.CREATED) {
+            notifyObservers();  // Notificar a las vistas que hay cambios
+        } else {
+            System.err.println("Error al registrar ubicación: " + response.getMessage());
+        }
+
+        return response;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return new Response("Error inesperado al registrar ubicación: " + e.getMessage(), Status.BAD_REQUEST);
+    }
+}
+
 
 }
