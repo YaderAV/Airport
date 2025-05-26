@@ -27,6 +27,7 @@ import airport.controllers.FlightController;
 import airport.controllers.LocationController;
 import airport.controllers.PassengerController;
 import airport.controllers.PlaneController;
+import airport.controllers.service.PassengerUpdateService;
 import airport.views.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class Main {
 
                 // Si los mapas cargaron bien
                 if (planesMap != null && locationsMap != null) {
-                    JSONFlight flightMapper = new JSONFlight(planesMap, locationsMap);
+                    JSONFlight flightMapper = new JSONFlight(planesMap, locationsMap, passengerMap);
                     FlightDataLoader flightLoader = new FlightDataLoader(flightMapper, planesMap, locationsMap, "json/flights.json");
                     JSONStorage storage = new JSONStorage(planeLoader, locationLoader, passengerLoader, flightLoader);
 
@@ -85,7 +86,8 @@ public class Main {
                         LoadedData loadedData = storage.loadAll();
                         LocationController locationController = new LocationController(locationsMap, storage);
                         PlaneController planeController = new PlaneController(planesMap, storage);
-                        PassengerController passengerController = new PassengerController(passengerMap, storage,  new ArrayList<>());
+                        PassengerUpdateService passengerUpdateService = new PassengerUpdateService(passengerMap, storage);
+                        PassengerController passengerController = new PassengerController(passengerMap, storage,  new ArrayList<>(),passengerUpdateService);
                         FlightController flightController = new FlightController(locationsMap, planesMap, passengerMap, storage);
                         PassengerRepository passengerRepository = new PassengerRepository(passengerController);
                         FlightRepository flightRepository = new FlightRepository(flightController);

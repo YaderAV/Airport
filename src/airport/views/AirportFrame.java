@@ -136,6 +136,31 @@ private void updateMyFlightsTable(String passengerId) throws IOException {
         });
     }
 }
+private void onUpdateUser() {
+    String selectedId = (String) userSelect.getSelectedItem();
+    if (selectedId == null || selectedId.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario.");
+        return;
+    }
+
+    String newFirstName = fieldFirstNameUpdate.getText();
+    String newLastName = fieldLastNameUpdate.getText();
+    String newCountry = fieldCountryUpdate.getText();
+    String newPhoneCode = fieldPrefixUpdate.getText();
+    String newPhone = fieldPhoneUpdate.getText();
+    String newYear = fieldYearUpdate.getText();
+    String newMonth = (String) monthUpdate.getSelectedItem();
+    String newDay = (String) dayUpdate.getSelectedItem();
+
+
+
+    passengerRepository.updatePassenger(
+        selectedId, newFirstName, newLastName, newYear, newMonth, newDay, newPhoneCode, newPhone, newCountry
+    );
+
+    JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
+}
+
 
     private void updateFlightTable() {
         DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
@@ -959,6 +984,11 @@ private void updateLocationTable() {
         jLabel37.setText("First Name:");
 
         fieldFirstNameUpdate.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        fieldFirstNameUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldFirstNameUpdateActionPerformed(evt);
+            }
+        });
 
         jLabel38.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel38.setText("Last Name:");
@@ -1657,7 +1687,8 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
-
+        onUpdateUser();                                      
+   
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
@@ -1796,6 +1827,10 @@ private void updateLocationTable() {
     }
 
     }//GEN-LAST:event_showFlightsButtonActionPerformed
+
+    private void fieldFirstNameUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldFirstNameUpdateActionPerformed
+        
+    }//GEN-LAST:event_fieldFirstNameUpdateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel addToFlightPanel;

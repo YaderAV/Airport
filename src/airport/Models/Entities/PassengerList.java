@@ -20,7 +20,7 @@ public class PassengerList {
         passengers.add(passenger);
     }
 
-    public List<Passenger> getPassenger() {
+    public List<Passenger> getPassengers() {
         return new ArrayList<>(passengers);
     }
     public int count(){

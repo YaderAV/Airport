@@ -117,7 +117,7 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
     for (Flight flight : flights) {
         System.out.println("DEBUG - Revisando vuelo: " + flight.getId());
 
-        List<Passenger> passengers = flight.getPassengerList().getPassenger();
+        List<Passenger> passengers = flight.getPassengerList().getPassengers();
         System.out.println("DEBUG - Pasajeros en el vuelo " + flight.getId() + ":");
         for (Passenger p : passengers) {
             System.out.println("    -> " + p.getId() + " - " + p.getFullname());

@@ -111,6 +111,7 @@ import airport.Models.Entities.Plane;
         public int getMinutesDurationScale() {
             return schedule.getMinutesDurationScale();
         }
-
+        
+        
     }
 
