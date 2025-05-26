@@ -8,8 +8,10 @@ package airport.controllers.utils.parser;
  *
  * @author saraibanez
  */
-
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Parsers {
 
@@ -23,4 +25,8 @@ public class Parsers {
             return LocalDate.of(y, month, day);
         };
     }
+    public static ParseValue<List<Object>> List(Map<Object,Object> map){
+        return  (ParseValue<List<Object>>) new ArrayList<Object>(map.values());
+    }
+            
 }

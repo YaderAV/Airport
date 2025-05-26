@@ -110,6 +110,7 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
     }
     
     public List<Flight> getFlightsByPassengerId(long passengerId) {
+
     System.out.println("DEBUG - Iniciando búsqueda de vuelos para el pasajero con ID: " + passengerId);
 
     List<Flight> passengerFlights = new ArrayList<>();
