@@ -53,13 +53,15 @@ public class FlightDataLoader implements FlightStorage<Flight> {
 
     @Override
     public void saveFlights(List<Flight> flights) throws IOException {
-        JSONArray array = new JSONArray();
-        for(Flight flight : flights){
-            array.put(flightMapper.toJSON(flight));
-            Files.writeString(Paths.get(path), array.toString(4));
-        }
-        
+    JSONArray array = new JSONArray();
+    for (Flight flight : flights) {
+        array.put(flightMapper.toJSON(flight));
     }
+
+
+    Files.writeString(Paths.get(path), array.toString(4));
+}
+
 
     public String getPath() {
         return path;

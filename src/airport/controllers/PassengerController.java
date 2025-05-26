@@ -29,11 +29,13 @@ public class PassengerController  {
     private final Map<Long, Passenger> passengers;
     private final JSONStorage storage;
     private Iterable<Flight> flights;
+    private PassengerUpdateService passengerUpdateService;
 
-    public PassengerController(Map<Long, Passenger> passengers, JSONStorage storage,Iterable<Flight> flights) {
+    public PassengerController(Map<Long, Passenger> passengers, JSONStorage storage,Iterable<Flight> flights, PassengerUpdateService passengerUpdateService) {
         this.passengers = passengers;
         this.storage = storage;
         this.flights = flights;
+        this.passengerUpdateService = passengerUpdateService;
     }
 
     public Response registerPassenger( 
@@ -89,6 +91,26 @@ public Response getAllPassengers() {
     System.out.println("DEBUG - PassengerController.getAllPassengers() -> sortedList: " + sortedList);
     return new Response("Lista de pasajeros obtenida.", Status.OK, sortedList);
 }
+
+public void updatePassenger(String id, String firstName, String lastName, String year, String month, String day, String phoneCode, String phone, String country) {
+    try {
+        long idLong = Long.parseLong(id);
+        int yearInt = Integer.parseInt(year);
+        int monthInt = Integer.parseInt(month);
+        int dayInt = Integer.parseInt(day);
+        int phoneCodeInt = Integer.parseInt(phoneCode);  // <--- Ajuste aquí: convertir a int
+        long phoneLong = Long.parseLong(phone);          // <--- Ajuste aquí: convertir a long
+
+        LocalDate birthDate = LocalDate.of(yearInt, monthInt, dayInt);
+
+        passengerUpdateService.update(idLong, firstName, lastName, birthDate, phoneCodeInt, phoneLong, country);
+    } catch (NumberFormatException e) {
+        System.out.println("Error: formato de número inválido. " + e.getMessage());
+    } catch (Exception e) {
+        System.out.println("Error al actualizar el pasajero: " + e.getMessage());
+    }
+}
+
 
 
 

@@ -27,7 +27,7 @@ public class PassengerRegistrationService {
     }
 
     public Response register(Passenger passenger) throws IOException {
-        PassengerValidator validator = new PassengerValidator(passengers);
+        PassengerValidator validator = new PassengerValidator(passengers,false);
         ValidationResult validation = validator.validate(passenger);
 
         if (!validation.isValid()) {

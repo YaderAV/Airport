@@ -9,9 +9,11 @@ import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Flights.FlightSchedule;
 import airport.Models.Entities.Flights.ScaledFlight;
 import airport.Models.Entities.Location;
+import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import java.time.LocalDateTime;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -21,10 +23,12 @@ import org.json.JSONObject;
 public class JSONFlight implements JSONMapper<Flight> {
     private final Map<String, Plane> planes; 
     private final Map<String, Location> locations;
+    private final Map<Long, Passenger> passengers;
 
-    public JSONFlight(Map<String, Plane> planes, Map<String, Location> locations) {
+    public JSONFlight(Map<String, Plane> planes, Map<String, Location> locations, Map<Long, Passenger> passengers) {
         this.planes = planes;
         this.locations = locations;
+        this.passengers = passengers;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class JSONFlight implements JSONMapper<Flight> {
 
         JSONObject json = new JSONObject();
         json.put("id", f.getId());
-        json.put("plane", f.getPlane().getId());  // Corrección: usamos solo el ID
+        json.put("plane", f.getPlane().getId());
         json.put("departureLocation", f.getDepartureLocation().getAirportID());
         json.put("arrivalLocation", f.getArrivalLocation().getAirportID());
         json.put("departureDate", f.getSchedule().getDepartureDate().toString());
@@ -44,12 +48,19 @@ public class JSONFlight implements JSONMapper<Flight> {
 
         if (f instanceof ScaledFlight) {
             ScaledFlight sf = (ScaledFlight) f;
-            json.put("scaleLocation", sf.getScale().getAirportID()); 
+            json.put("scaleLocation", sf.getScale().getAirportID());
         } else {
             json.put("scaleLocation", JSONObject.NULL);
         }
 
-        System.out.println("toJSON - OBJETO JSON FINAL: " + json.toString());
+        // Serializar pasajeros asociados
+        JSONArray passengersArray = new JSONArray();
+        for (Passenger p : f.getPassengerList().getPassengers()) {  // 👈 Usamos el getter correcto de PassengerList
+            passengersArray.put(p.getId());
+        }
+        json.put("passengers", passengersArray);
+
+        System.out.println("toJSON - OBJETO JSON FINAL: " + json.toString(4));
         return json;
     }
 
@@ -87,10 +98,23 @@ public class JSONFlight implements JSONMapper<Flight> {
             result = new DirectFlight(id, plane, departure, arrival, flightSchedule);
         }
 
+        // Deserializar pasajeros
+        if (json.has("passengers")) {
+            JSONArray passengersArray = json.getJSONArray("passengers");
+            for (int i = 0; i < passengersArray.length(); i++) {
+                long passengerId = passengersArray.getLong(i);
+                Passenger p = passengers.get(passengerId);
+                if (p != null) {
+                    result.getPassengerList().addPassenger(p);
+                } else {
+                    System.out.println("WARNING: Pasajero no encontrado con ID: " + passengerId);
+                }
+            }
+        }
+
         System.out.println("fromJSON - Flight creado: " + result.getId());
         return result;
     }
+    
 }
-
-
 

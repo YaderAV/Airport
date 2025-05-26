@@ -44,12 +44,15 @@ public class PassengerDataLoader implements PassengerStorage {
 
 @Override
 public void savePassengers(Map passengers) throws IOException {
-        JSONArray array = new JSONArray(); 
-        for(Object p : passengers.values()){
-            array.put(mapper.toJSON((Passenger) p));
-        }
-        Files.writeString(Paths.get(path), array.toString(4));
-    }
+      System.out.println("=== DEBUG: Guardando pasajeros ===");
+System.out.println("Ruta: " + path);
+for (Object p : passengers.values()) {
+    JSONObject json = mapper.toJSON((Passenger) p);
+    System.out.println("JSON: " + json.toString(4));
+}
+System.out.println("=================================");
+
+    }   
 
     public String getPath() {
         return path;
