@@ -38,7 +38,22 @@ public class LocationController {
             String longitudeAirportText
     ) {
         try {
+            
             Location location = LocationsDataParser.Parse(IDAirportText, nameAirportText, cityAirportText, countryAirportText, latitudeAirportText, longitudeAirportText);
+             // DEBUG: Mostrar datos recibidos y procesados por el parser
+    System.out.println("====== DEBUG - Datos devueltos por LocationsDataParser.Parse ======");
+    System.out.println("ID: " + location.getAirportID());
+    System.out.println("Name: " + location.getAirportName());
+    System.out.println("City: " + location.getAirportCity());
+    System.out.println("Country: " + location.getAirportCountry());
+    System.out.println("Latitude: " + location.getAirportLatitude());
+    System.out.println("Longitude: " + location.getAirportLongitude());
+    System.out.println("==============================================================");
+
+
+// Llamada a Parse
+
+            
             LocationCreationService service = new LocationCreationService(locations, storage);
             Response response = service.create(location);
             return response;

@@ -13,6 +13,8 @@ import airport.Models.Observable.FlightRepository;
 import airport.Models.Observable.LocationRepository;
 import airport.Models.Observable.PassengerRepository;
 import airport.Models.Observable.PlaneRepository;
+import airport.controllers.utils.Response;
+import airport.controllers.utils.Status;
 
 import airport.controllers.utils.parser.Parsers;
 
@@ -51,10 +53,26 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             int selectedIndex = views.getSelectedIndex();
             String selectedTabTitle = views.getTitleAt(selectedIndex);
 
+<<<<<<< HEAD
             if (selectedTabTitle.equals("Add to flight")) {
                 cargarVuelosEnComboBox();
             }
         });
+=======
+        if (selectedTabTitle.equals("Add to flight")) {
+            cargarVuelosEnComboBox();
+        }
+});
+        views.addChangeListener(e -> {
+    int selectedIndex = views.getSelectedIndex();
+    String selectedTabTitle = views.getTitleAt(selectedIndex);
+
+    if (selectedTabTitle.equals("Flight registration")) {
+        cargarPlanesEnComboBox();
+    }
+});
+
+>>>>>>> e094ffced0632ee3e9df57a482f89502b4717799
 
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
@@ -138,6 +156,86 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         tablePlanes = planeRepository.getPassengerRowsR();
         viewAllPlanes.setViewportView(tablePlanes);
     }
+<<<<<<< HEAD
+=======
+}
+    private void cargarPlanesEnComboBox() {
+    try {
+        planeFlightR.removeAllItems();
+        planeFlightR.addItem("Select Plane");
+
+        for (Plane plane : planeRepository.getAllPlanes()) {
+            planeFlightR.addItem(plane.getId());
+            System.out.println("DEBUG - Avión cargado: " + plane.getId());
+        }
+
+        System.out.println("DEBUG - Total de aviones cargados en ComboBox: " + planeFlightR.getItemCount());
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error al cargar los aviones: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+  private void cargarVuelosEnComboBox() {
+    showFlightsButton.removeAllItems();
+    showFlightsButton.addItem("Select Flight");  // Item por defecto
+
+    for (Flight f : flightRepository.getAllFlights()) {
+        String info = f.getId() + " (" + f.getDepartureLocation().getAirportID() + " ➔ " + f.getArrivalLocation().getAirportID() + ")";
+        showFlightsButton.addItem(info);
+    }
+
+    System.out.println("DEBUG - Vuelos cargados: " + showFlightsButton.getItemCount());
+}
+
+
+    
+private void updateMyFlightsTable(String passengerId) throws IOException {
+    DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+    model.setRowCount(0);  // Limpiar tabla
+
+    List<Flight> flights = flightRepository.getFlightsByPassenger(passengerId);
+
+    for (Flight f : flights) {
+        LocalDateTime departureDateTime = f.getSchedule().getDepartureDate();
+        LocalDateTime arrivalDateTime = departureDateTime
+            .plusHours(f.getHoursDurationArrival())
+            .plusMinutes(f.getMinutesDurationArrival());
+
+        model.addRow(new Object[]{
+            f.getId(),
+            departureDateTime.toString(),
+            arrivalDateTime.toString()
+        });
+    }
+}
+private void onUpdateUser() {
+    String selectedId = (String) userSelect.getSelectedItem();
+    if (selectedId == null || selectedId.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario.");
+        return;
+    }
+
+    String newFirstName = fieldFirstNameUpdate.getText();
+    String newLastName = fieldLastNameUpdate.getText();
+    String newCountry = fieldCountryUpdate.getText();
+    String newPhoneCode = fieldPrefixUpdate.getText();
+    String newPhone = fieldPhoneUpdate.getText();
+    String newYear = fieldYearUpdate.getText();
+    String newMonth = (String) monthUpdate.getSelectedItem();
+    String newDay = (String) dayUpdate.getSelectedItem();
+
+
+
+    passengerRepository.updatePassenger(
+        selectedId, newFirstName, newLastName, newYear, newMonth, newDay, newPhoneCode, newPhone, newCountry
+    );
+
+    JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
+}
+
+>>>>>>> e094ffced0632ee3e9df57a482f89502b4717799
 
     private void updateFlightTable() {
         tableAllFlights = passengerRepository.getPassengerRowsR();
@@ -164,6 +262,35 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
 
    
 
+<<<<<<< HEAD
+=======
+    for (Location l : locationRepository.getAllLocations()) {
+        locationModel.addRow(new Object[]{
+            l.getAirportID(),
+            l.getAirportName(),
+            l.getAirportCity(),
+            l.getAirportCountry(),
+            l.getAirportLatitude(),
+            l.getAirportLongitude()
+        });
+    }
+}
+
+
+
+    
+     private void updatePassengerTable() {
+           DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+    model.setRowCount(0);
+
+    for (Passenger p : passengerRepository.getAllPassengers()) {
+        model.addRow(new Object[]{
+            p.getId(), p.getFullname(), p.getBirthDate(), p.getAge(), p.getFullPhone(), p.getCountry(), p.getNumberFlights()
+        });
+    }
+    
+    }
+>>>>>>> e094ffced0632ee3e9df57a482f89502b4717799
     private void blockPanels() {
         //9, 11
         for (int i = 1; i < views.getTabCount(); i++) {
@@ -671,7 +798,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                 .addGroup(locationRPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
                     .addComponent(fieldAirportLongitude, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(btCreateLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47))
         );
@@ -682,15 +809,30 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         jLabel22.setText("ID:");
 
         fieldIDflight.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        fieldIDflight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldIDflightActionPerformed(evt);
+            }
+        });
 
         jLabel23.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel23.setText("Plane:");
 
         planeFlightR.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         planeFlightR.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Plane" }));
+        planeFlightR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                planeFlightRActionPerformed(evt);
+            }
+        });
 
         locationDeparture.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         locationDeparture.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Location" }));
+        locationDeparture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                locationDepartureActionPerformed(evt);
+            }
+        });
 
         jLabel24.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel24.setText("Departure location:");
@@ -901,7 +1043,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                                 .addComponent(jLabel26)
                                 .addComponent(locationScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel27)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
                 .addComponent(btCreateFlight, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50))
         );
@@ -1013,7 +1155,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                     .addGroup(updateInfoPanelLayout.createSequentialGroup()
                         .addGap(507, 507, 507)
                         .addComponent(btUpdate)))
-                .addContainerGap(554, Short.MAX_VALUE))
+                .addContainerGap(622, Short.MAX_VALUE))
         );
         updateInfoPanelLayout.setVerticalGroup(
             updateInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1092,7 +1234,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                 .addGroup(addToFlightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showFlightsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fieldIDaddTFlight, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(828, Short.MAX_VALUE))
+                .addContainerGap(895, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addToFlightPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btAddFlight, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1162,7 +1304,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             .addGroup(showMyFlightsPanelLayout.createSequentialGroup()
                 .addGap(269, 269, 269)
                 .addComponent(viewMyFlights, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addContainerGap(362, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showMyFlightsPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btRefreshMyFlights)
@@ -1173,7 +1315,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             .addGroup(showMyFlightsPanelLayout.createSequentialGroup()
                 .addGap(61, 61, 61)
                 .addComponent(viewMyFlights, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(btRefreshMyFlights)
                 .addContainerGap())
         );
@@ -1226,12 +1368,12 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                     .addGroup(showAllPassengersPanelLayout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addComponent(viewPassengers, javax.swing.GroupLayout.PREFERRED_SIZE, 1078, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         showAllPassengersPanelLayout.setVerticalGroup(
             showAllPassengersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showAllPassengersPanelLayout.createSequentialGroup()
-                .addContainerGap(72, Short.MAX_VALUE)
+                .addContainerGap(74, Short.MAX_VALUE)
                 .addComponent(viewPassengers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btRefreshPassengers)
@@ -1286,7 +1428,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                     .addGroup(showAllFlightsPanelLayout.createSequentialGroup()
                         .addGap(521, 521, 521)
                         .addComponent(refreshAllFlights)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
         showAllFlightsPanelLayout.setVerticalGroup(
             showAllFlightsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1295,7 +1437,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                 .addComponent(viewAllFlights, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(refreshAllFlights)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         views.addTab("Show all flights", showAllFlightsPanel);
@@ -1345,12 +1487,12 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                     .addGroup(showAllPlanesPanelLayout.createSequentialGroup()
                         .addGap(145, 145, 145)
                         .addComponent(viewAllPlanes, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
         showAllPlanesPanelLayout.setVerticalGroup(
             showAllPlanesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showAllPlanesPanelLayout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
+                .addContainerGap(47, Short.MAX_VALUE)
                 .addComponent(viewAllPlanes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
                 .addComponent(btRefreshAllPlanes)
@@ -1404,12 +1546,12 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                     .addGroup(showAllLocationsPanelLayout.createSequentialGroup()
                         .addGap(245, 245, 245)
                         .addComponent(viewAllLocations, javax.swing.GroupLayout.PREFERRED_SIZE, 652, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addContainerGap(324, Short.MAX_VALUE))
         );
         showAllLocationsPanelLayout.setVerticalGroup(
             showAllLocationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showAllLocationsPanelLayout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
+                .addContainerGap(50, Short.MAX_VALUE)
                 .addComponent(viewAllLocations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(btRefreshAllLocations)
@@ -1461,7 +1603,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                             .addComponent(jLabel46))
                         .addGap(79, 79, 79)
                         .addGroup(delayFlightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(delayHour, 0, 106, Short.MAX_VALUE)
+                            .addComponent(delayHour, 0, 172, Short.MAX_VALUE)
                             .addComponent(delayID, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(820, 820, 820))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delayFlightPanelLayout.createSequentialGroup()
@@ -1484,7 +1626,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
                 .addGroup(delayFlightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel48)
                     .addComponent(delayMinute, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 307, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
                 .addComponent(btDelay)
                 .addGap(33, 33, 33))
         );
@@ -1540,6 +1682,8 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
             views.setEnabledAt(i, true);
         }
         views.setEnabledAt(5, false);
+        views.setEnabledAt(7, false);
+        
         views.setEnabledAt(6, false);
     }//GEN-LAST:event_administratorActionPerformed
 
@@ -1580,45 +1724,133 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     }//GEN-LAST:event_btRegisterActionPerformed
 
     private void fieldCreateAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldCreateAirplaneActionPerformed
-        try {
-            String id = fieldIDairplane.getText();
-            String brand = fieldBrand.getText();
-            String model = fieldModel.getText();
-            int maxCapacity = Parsers.INTEGER.parse(fieldMaxCapacity.getText());
-            String airline = fieldAirline.getText();
+// Obtener datos del formulario
+        String id = fieldIDairplane.getText();
+        String brand = fieldBrand.getText();
+        String model = fieldModel.getText();
+        String maxCapacity = fieldMaxCapacity.getText();
+        String airline = fieldAirline.getText();
 
-            this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
+        // Llamar al repositorio para registrar el avión
+        planeRepository.createPlaneFromRawData(id, brand, model, maxCapacity, airline);
 
-            this.planeFlightR.addItem(id);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error en los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // Actualizar la UI
+        planeFlightR.addItem(id);  // Agregar el avión al combo para crear vuelos
+        JOptionPane.showMessageDialog(this, "Avión registrado correctamente.");
+
+        // Limpiar campos
+        fieldIDairplane.setText("");
+        fieldBrand.setText("");
+        fieldModel.setText("");
+        fieldMaxCapacity.setText("");
+        fieldAirline.setText("");
+
     }//GEN-LAST:event_fieldCreateAirplaneActionPerformed
 
     private void btCreateLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateLocationActionPerformed
-        // TODO add your handling code here:
-        try {
-            String id = fieldAirportID.getText();
-            String name = fieldAirportName.getText();
-            String city = fieldAirportCity.getText();
-            String country = fieldAirportCountry.getText();
-            double latitude = Parsers.DOUBLE.parse(fieldAirportLatitude.getText());
-            double longitude = Parsers.DOUBLE.parse(fieldAirportLongitude.getText());
+                                                 
+    try {
+        // Recolectar datos del formulario
+        String id = fieldAirportID.getText();
+        String name = fieldAirportName.getText();
+        String city = fieldAirportCity.getText();
+        String country = fieldAirportCountry.getText();
+        String latitudeStr = fieldAirportLatitude.getText();
+        String longitudeStr = fieldAirportLongitude.getText();
+        System.out.println("====== DEBUG - Datos recibidos para registro de ubicación ======");
+        System.out.println("ID: " + id);
+        System.out.println("Name: " + name);
+        System.out.println("City: " + city);
+        System.out.println("Country: " + country);
+        System.out.println("Latitude: " + latitudeStr);
+        System.out.println("Longitude: " + longitudeStr);
+        System.out.println("==============================================================");
 
-            this.locations.add(new Location(id, name, city, country, latitude, longitude));
+        // Llamar al repositorio para registrar la ubicación
+        Response response = locationRepository.createLocationFromRawData(id, name, city, country, latitudeStr, longitudeStr);
 
-            this.locationDeparture.addItem(id);
-            this.locationArrival.addItem(id);
-            this.locationScale.addItem(id);
+        if (response.getStatus() == Status.CREATED) {
+            // Actualizar combos para vuelos
+            locationDeparture.addItem(id);
+            locationArrival.addItem(id);
+            locationScale.addItem(id);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error en los datos del aeropuerto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ubicación registrada correctamente.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar ubicación: " + response.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        // Limpiar campos
+        fieldAirportID.setText("");
+        fieldAirportName.setText("");
+        fieldAirportCity.setText("");
+        fieldAirportCountry.setText("");
+        fieldAirportLatitude.setText("");
+        fieldAirportLongitude.setText("");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
 
     }//GEN-LAST:event_btCreateLocationActionPerformed
 
     private void btCreateFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateFlightActionPerformed
+   try{
 
+    String id = fieldIDflight.getText();
+    String planeID = planeFlightR.getSelectedItem().toString();
+    String departureLocationID = locationDeparture.getSelectedItem().toString();
+    String arrivalLocationID = locationArrival.getSelectedItem().toString();
+    String scaleLocationID = locationScale.getSelectedItem().toString();
+
+    String year = departureYear.getText();
+    String month = departureMonth.getSelectedItem().toString();
+    String day = departureDay.getSelectedItem().toString();
+    String hour = departureHour.getSelectedItem().toString();
+    String minute = departureMinute.getSelectedItem().toString();
+
+    String arrivalHour = this.arrivalHour.getSelectedItem().toString();
+    String arrivalMinute = this.arrivalMinute.getSelectedItem().toString();
+    String scaleHour = this.scaleHour.getSelectedItem().toString();
+    String scaleMinute = this.scaleMinute.getSelectedItem().toString();
+    
+     Response response = flightRepository.createFlightFromRawData(
+            id, planeID, departureLocationID, arrivalLocationID, scaleLocationID,
+            year, month, day, hour, minute, arrivalHour, arrivalMinute, scaleHour, scaleMinute
+        );
+
+        // Procesar respuesta
+        if (response.getStatus() == Status.CREATED) {
+            JOptionPane.showMessageDialog(this, "Vuelo registrado correctamente.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar vuelo: " + response.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // Limpiar campos
+        fieldIDflight.setText("");
+        planeFlightR.setSelectedIndex(0);
+        locationDeparture.setSelectedIndex(0);
+        locationArrival.setSelectedIndex(0);
+        locationScale.setSelectedIndex(0);
+        departureYear.setText("");
+        departureMonth.setSelectedIndex(0);
+        departureDay.setSelectedIndex(0);
+        departureHour.setSelectedIndex(0);
+        departureMinute.setSelectedIndex(0);
+        this.arrivalHour.setSelectedIndex(0);
+        this.arrivalMinute.setSelectedIndex(0);
+        this.scaleHour.setSelectedIndex(0);
+        this.scaleMinute.setSelectedIndex(0);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
+    
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
@@ -1688,12 +1920,13 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
         model.setRowCount(0);
-        for (Passenger passenger : this.passengers) {
+        for (Passenger passenger : passengerRepository.getAllPassengers()) {
             model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.getAge(), passenger.getFullPhone(), passenger.getCountry(), passenger.getNumberFlights()});
         }
     }//GEN-LAST:event_btRefreshPassengersActionPerformed
 
     private void refreshAllFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshAllFlightsActionPerformed
+<<<<<<< HEAD
         try {
             // TODO add your handling code here:
             JTable table= flightRepository.onRefreshAllFlights();
@@ -1708,6 +1941,39 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         } catch (IOException ex) {
             Logger.getLogger(AirportFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+=======
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
+        model.setRowCount(0);
+        for (Flight flight : flightRepository.getAllFlights()) {
+         
+        String scaleAirportID = "-";
+        if (flight.getScaleLocation() != null) {
+            scaleAirportID = flight.getScaleLocation().getAirportID();
+        }
+
+        // Calcular arrivalDate considerando si tiene escala
+        LocalDateTime arrivalDate = flight.getSchedule().getDepartureDate()
+            .plusHours(flight.getHoursDurationArrival())
+            .plusMinutes(flight.getMinutesDurationArrival());
+            arrivalDate = arrivalDate
+                .plusHours(flight.getHoursDurationScale())
+                .plusMinutes(flight.getMinutesDurationScale());
+   
+
+        model.addRow(new Object[]{
+            flight.getId(),
+            flight.getDepartureLocation().getAirportID(),
+            flight.getArrivalLocation().getAirportID(),
+            scaleAirportID,
+            flight.getSchedule().getDepartureDate().toString(),
+            arrivalDate.toString(),
+            flight.getPlane().getId(),
+            flight.getPassengerList().count()
+        });
+    }
+
+>>>>>>> e094ffced0632ee3e9df57a482f89502b4717799
         
     }//GEN-LAST:event_refreshAllFlightsActionPerformed
 
@@ -1715,7 +1981,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) tablePlanes.getModel();
         model.setRowCount(0);
-        for (Plane plane : this.planes) {
+        for (Plane plane : planeRepository.getAllPlanes()) {
             model.addRow(new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), plane.getNumFlights()});
         }
     }//GEN-LAST:event_btRefreshAllPlanesActionPerformed
@@ -1724,7 +1990,7 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) tableLocations.getModel();
         model.setRowCount(0);
-        for (Location location : this.locations) {
+        for (Location location : locationRepository.getAllLocations()) {
             model.addRow(new Object[]{location.getAirportID(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()});
         }
     }//GEN-LAST:event_btRefreshAllLocationsActionPerformed
@@ -1775,6 +2041,18 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private void fieldFirstNameUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldFirstNameUpdateActionPerformed
 
     }//GEN-LAST:event_fieldFirstNameUpdateActionPerformed
+
+    private void fieldIDflightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIDflightActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldIDflightActionPerformed
+
+    private void planeFlightRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planeFlightRActionPerformed
+         
+    }//GEN-LAST:event_planeFlightRActionPerformed
+
+    private void locationDepartureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_locationDepartureActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_locationDepartureActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel addToFlightPanel;

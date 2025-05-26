@@ -41,6 +41,15 @@ public class PlaneController {
         try {
             Plane plane = PlaneDataParser.Parse(ID, brand, model, maxCapacity, airline);
             PlaneRegistrationService service;
+            
+    // DEBUG: Imprimir todos los datos recibidos
+    System.out.println("====== DEBUG - Datos recibidos para RegisterPlane ======");
+    System.out.println("ID: " + ID);
+    System.out.println("Brand: " + brand);
+    System.out.println("Model: " + model);
+    System.out.println("Max Capacity: " + maxCapacity);
+    System.out.println("Airline: " + airline);
+    System.out.println("==============================================================");
             service = new PlaneRegistrationService(planes, storage);
             Response response = service.register(plane);
             return response;

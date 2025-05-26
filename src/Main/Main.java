@@ -88,7 +88,7 @@ public class Main {
                         PassengerController passengerController = new PassengerController(passengerMap, storage,  new ArrayList<>(),passengerUpdateService);
                         FlightController flightController = new FlightController(locationsMap, planesMap, passengerMap, storage);
                         PassengerRepository passengerRepository = new PassengerRepository(passengerController);
-                        FlightRepository flightRepository = new FlightRepository(flightController);
+                        FlightRepository flightRepository = new FlightRepository(flightController, planesMap, locationsMap);
                         LocationRepository locationRepository  =  new LocationRepository(locationController);
                         PlaneRepository planeRepository  =  new PlaneRepository(planeController);
                         AirportFrame airportFrame = new AirportFrame();

@@ -18,7 +18,7 @@ public class PlaneDataParser {
             String maxCapacity,
             String airline
     ) throws Exception{
-        int MaxCapacity = Parsers.INTEGER.parse(airline);
+        int MaxCapacity = Parsers.INTEGER.parse(maxCapacity);
         return new Plane(ID,brand, model, MaxCapacity, airline);
     }
 }
