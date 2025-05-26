@@ -37,6 +37,6 @@ public class PlaneRegistrationService {
 
         planes.put(plane.getId(), plane);
         storage.getPlaneLoader().savePlanes(planes);
-        return new Response("Avión registrado correctamente.", Status.CREATED, plane);
+        return new Response("Avión registrado correctamente.", Status.CREATED, plane.clone());
     }
 }

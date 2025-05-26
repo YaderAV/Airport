@@ -4,7 +4,6 @@
  */
 package Main;
 
-import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
@@ -31,7 +30,6 @@ import airport.views.AirportFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import javax.swing.UIManager;
 

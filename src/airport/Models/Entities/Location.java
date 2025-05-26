@@ -4,11 +4,13 @@
  */
 package airport.Models.Entities;
 
+import airport.controllers.Prototype;
+
 /**
  *
  * @author yader
  */
-public class Location {
+public class Location implements Prototype<Location> {
     private final String airportID;
     private String airportName;
     private String airportCity;
@@ -67,6 +69,11 @@ public class Location {
 
     public void setAirportLongitude(double airportLongitude) {
         this.airportLongitude = airportLongitude;
+    }
+
+    @Override
+    public Location clone() {
+       return new Location (airportID, airportName, airportCity, airportCountry, airportLatitude, airportLongitude);
     }
     
     

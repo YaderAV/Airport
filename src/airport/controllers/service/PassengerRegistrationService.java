@@ -36,7 +36,7 @@ public class PassengerRegistrationService {
         
         passengers.put(passenger.getId(), passenger);
         storage. getPassengerLoader().savePassengers(passengers);
-        return new Response("Pasajero registrado correctamente", Status.CREATED, passenger);
+        return new Response("Pasajero registrado correctamente", Status.CREATED, passenger.clone());
     }
     
 }

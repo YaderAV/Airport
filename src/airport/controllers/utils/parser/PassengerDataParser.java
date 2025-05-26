@@ -11,6 +11,7 @@ package airport.controllers.utils.parser;
 
 
 import airport.Models.Entities.Passenger;
+import airport.controllers.utils.validators.FieldValidator;
 import java.time.LocalDate;
 
 public class PassengerDataParser {

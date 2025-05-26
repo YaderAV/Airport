@@ -48,6 +48,6 @@ public class PassengerUpdateService {
         passenger.setCountry(country);
 
         storage.getPassengerLoader().savePassengers(passengers);
-        return new Response("Pasajero actualizado exitosamente.", Status.OK, passenger);
+        return new Response("Pasajero actualizado exitosamente.", Status.OK, passenger.clone());
     }
 }

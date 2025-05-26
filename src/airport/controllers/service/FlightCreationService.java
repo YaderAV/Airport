@@ -36,6 +36,6 @@ public class FlightCreationService {
 
         flights.add(flight);
         storage.getFlightLoader().saveFlights(flights);
-        return new Response("Vuelo registrado correctamente", Status.CREATED, flight);
+        return new Response("Vuelo registrado correctamente", Status.CREATED, flight.clone());
     }
 }

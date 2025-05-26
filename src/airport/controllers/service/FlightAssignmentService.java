@@ -9,8 +9,10 @@ import airport.Models.Entities.Passenger;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import airport.controllers.utils.StructureDataHandler;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -36,6 +38,7 @@ public Response assignPassenger(Passenger passenger, String flightID) throws IOE
     }
 
     // Buscar el vuelo
+ 
     Flight flight = flights.stream()
         .filter(f -> f.getId().equals(flightID))
         .findFirst()
@@ -57,10 +60,14 @@ public Response assignPassenger(Passenger passenger, String flightID) throws IOE
     System.out.println("DEBUG: Guardando vuelos en el almacenamiento...");
 
     storage.getFlightLoader().saveFlights(flights);
-
+    Map<Long,Passenger> allPassengers = storage.getPassengerLoader().loadPassengers();
+    allPassengers.put(passenger.getId(), passenger);
+    
+    storage.getPassengerLoader().savePassengers(allPassengers);
+    
     System.out.println("==== DEBUG: Asignación finalizada ====\n");
 
-    return new Response("Pasajero añadido al vuelo", Status.OK, flight);
+    return new Response("Pasajero añadido al vuelo", Status.OK, flight.clone());
 }
 
 }

@@ -7,6 +7,7 @@ package airport.Models.Entities.Flights;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.PassengerList;
 import airport.Models.Entities.Plane;
+import airport.controllers.Prototype;
 
 
 /**
@@ -15,7 +16,7 @@ import airport.Models.Entities.Plane;
  */
 
 
-    public abstract class Flight {
+    public abstract class Flight implements Prototype<Flight>{
         protected String id; 
         protected Plane plane; 
         protected Location departureLocation;
@@ -111,6 +112,17 @@ import airport.Models.Entities.Plane;
         public int getMinutesDurationScale() {
             return schedule.getMinutesDurationScale();
         }
+
+    @Override
+    public Flight clone() {
+        Flight copy;
+        if(this instanceof DirectFlight){
+            copy = new DirectFlight(id, plane,departureLocation, arrivalLocation, schedule);
+        }else{
+        copy = new ScaledFlight(id, plane, departureLocation, this.getScaleLocation(),arrivalLocation,schedule);
+        }
+        return copy;
+    }
 
     }
 

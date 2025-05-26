@@ -5,6 +5,7 @@
 package airport.Models.Entities;
 
 import airport.Models.Entities.Flights.Flight;
+import airport.controllers.Prototype;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author yader
  */
-public class Passenger {
+public class Passenger implements Prototype<Passenger>{
 
     private final long id;
     private String firstname;
@@ -105,6 +106,11 @@ public class Passenger {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @Override
+    public Passenger clone() {
+       return new Passenger(id, firstname, lastname, birthDate, countryPhoneCode, phone, country);
     }
 
 }

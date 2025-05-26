@@ -37,7 +37,10 @@ public class FlightRepository extends ObservableBase {
         }
     }
 
-    
+    private Flight getFlightById(String flightID){
+       return flightController.getFlights().stream()
+               .filter(f->f.getId().equals(flightID)).findFirst().orElse(null);
+   }
 
     public void delayFlight(String flightId, int hourDelay, int minuteDelay) {
         try {
@@ -63,7 +66,7 @@ public class FlightRepository extends ObservableBase {
    public List<Flight> getFlightsByPassenger (String passengerID) throws IOException {
         return   flightController.getFlightsByPassengerId(Long.parseLong(passengerID));
     }
-
+  
     
 }
 

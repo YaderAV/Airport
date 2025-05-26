@@ -37,6 +37,6 @@ public class LocationCreationService {
 
         locations.put(location.getAirportID(), location);
         storage.getLocationLoader().saveLocations(locations);
-        return new Response("Localización registrada correctamente", Status.CREATED);
+        return new Response("Localización registrada correctamente", Status.CREATED, location.clone());
     }
 }

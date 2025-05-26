@@ -141,4 +141,12 @@ public Response addPassengerToFlight(Passenger passenger, String flightID) throw
     return passengerFlights;
 }
 
+    public List<Flight> getFlights() {
+        return flights;
+    }
+
+    public JSONStorage getStorage() {
+        return storage;
+    }
+
 }

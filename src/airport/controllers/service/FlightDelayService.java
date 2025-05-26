@@ -41,6 +41,6 @@ public class FlightDelayService {
         flight.getSchedule().delay(hourDelay, minuteDelay);
 
         storage.getFlightLoader().saveFlights(flights);
-        return new Response("Vuelo retrasado exitosamente", Status.OK, flight);
+        return new Response("Vuelo retrasado exitosamente", Status.OK, flight.clone());
     }
 }

@@ -5,6 +5,7 @@
 package airport.Models.Entities;
 
 import airport.Models.Entities.Flights.Flight;
+import airport.controllers.Prototype;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author yader
  */
-public class Plane {
+public class Plane implements Prototype<Plane>{
 
     private final String id;
     private String brand;
@@ -71,6 +72,11 @@ public class Plane {
 
     public void setAirline(String airline) {
         this.airline = airline;
+    }
+
+    @Override
+    public Plane clone() {
+        return new Plane(id,brand, model,maxCapacity, airline);
     }
     
     
