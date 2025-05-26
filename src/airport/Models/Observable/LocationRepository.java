@@ -9,6 +9,7 @@ import airport.controllers.LocationController;
 import airport.controllers.utils.Response;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.swing.JTable;
 
 /**
  *
@@ -23,7 +24,11 @@ public class LocationRepository extends ObservableBase {
     public LocationRepository(LocationController locationController) {
         this.locationController = locationController;
     }
-
+    public JTable getLocationRowsR(){
+        Object[][] data = locationController.getPassengerRows();
+        String [] headers = locationController.getHeaders();
+        return new JTable(data, headers);
+    }
     public ArrayList<Location> getAllLocations() {
        Response response = locationController.getAllLocations();
        System.out.println("DEBUG - response.getData(): " + response.getData());

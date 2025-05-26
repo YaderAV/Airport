@@ -5,8 +5,11 @@
 package airport.controllers;
 import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Location;
+import airport.Models.Entities.FligthTableModelAdapter;
 import airport.Models.Entities.Passenger;
+import airport.Models.Entities.PassengerTableModelAdapter;
 import airport.Models.Entities.Plane;
+import airport.Models.Observable.FlightRepository;
 import airport.controllers.service.FlightDelayService;
 import airport.controllers.service.FlightCreationService;
 import airport.controllers.service.FlightAssignmentService;
@@ -28,6 +31,9 @@ import java.util.Map;
 public class FlightController {
     private final List<Flight> flights;
     private final JSONStorage storage;
+    private  Map<String, Location> locations;
+    private Map<String, Plane> planes;
+    private Map<Long, Passenger> passengers;
 
     public FlightController(Map<String, Location> locations, Map<String, Plane> planes, Map<Long, Passenger> passengers, JSONStorage storage) throws IOException {
         this.storage = storage;
@@ -60,6 +66,20 @@ public class FlightController {
 
         return response;
     }
+    public Object[][] getFlightRows() throws IOException {
+        FlightController fc = new FlightController(locations, planes, passengers, storage);
+        FlightRepository fr = new FlightRepository(fc);
+        List<Flight> flights = (List<Flight>) fr.getAllFlights();
+        Object [][] rows = new Object[flights.size()][];
+        for(int i= 0; i<flights.size(); i++){
+            rows[i] = FligthTableModelAdapter.toRow(flights.get(i));
+        }
+        return rows;
+    }
+    public String[] getHeaders(){
+        return PassengerTableModelAdapter.getColimHeader();
+    }
+
 public Response addPassengerToFlight(Passenger passenger, String flightID) throws IOException {
     System.out.println("=== [DEBUG] Entrando a addPassengerToFlight ===");
     System.out.println("Passenger recibido: " + passenger);

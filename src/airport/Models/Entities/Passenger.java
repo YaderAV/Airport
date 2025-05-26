@@ -5,6 +5,7 @@
 package airport.Models.Entities;
 
 import airport.Models.Entities.Flights.Flight;
+import airport.Models.Entities.Flights.Flight;
 import airport.controllers.Prototype;
 import java.time.LocalDate;
 import java.time.Period;

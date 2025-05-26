@@ -16,14 +16,14 @@ import airport.Models.Observable.PlaneRepository;
 
 import airport.controllers.utils.parser.Parsers;
 
-
 import java.awt.Color;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -42,18 +42,19 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
     private ArrayList<Flight> flights;
     private PassengerRepository passengerRepository;
     private FlightRepository flightRepository;
-    private LocationRepository locationRepository ;
+    private LocationRepository locationRepository;
     private PlaneRepository planeRepository;
+
     public AirportFrame() {
         initComponents();
         views.addChangeListener(e -> {
-        int selectedIndex = views.getSelectedIndex();
-        String selectedTabTitle = views.getTitleAt(selectedIndex);
+            int selectedIndex = views.getSelectedIndex();
+            String selectedTabTitle = views.getTitleAt(selectedIndex);
 
-        if (selectedTabTitle.equals("Add to flight")) {
-            cargarVuelosEnComboBox();
-        }
-});
+            if (selectedTabTitle.equals("Add to flight")) {
+                cargarVuelosEnComboBox();
+            }
+        });
 
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
@@ -64,22 +65,23 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         this.blockPanels();
 
     }
+
     public void setPassengerRepository(PassengerRepository passengerRepository) {
-    this.passengerRepository = passengerRepository;
-}
+        this.passengerRepository = passengerRepository;
+    }
+
     public void setFlightRepository(FlightRepository flightRepository) {
-    this.flightRepository = flightRepository;
-}
-       public void setLocationRepository(LocationRepository locationRepository) {
-       this.locationRepository  = locationRepository ;
-}
-         public void setPlaneRepository(PlaneRepository planeRepository) {
-         this.planeRepository  =planeRepository ;
-}
+        this.flightRepository = flightRepository;
+    }
 
+    public void setLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
 
+    public void setPlaneRepository(PlaneRepository planeRepository) {
+        this.planeRepository = planeRepository;
+    }
 
-    
     @Override
     public void onDataChanged() {
         updatePassengerTable();
@@ -87,112 +89,72 @@ public class AirportFrame extends javax.swing.JFrame implements DataObserver {
         updateLocationTable();
         updatePlaneTable();
         cargarIDsEnComboBox();
-    
+
     }
+
+    
+
+    private void cargarVuelosEnComboBox() {
+        showFlightsButton.removeAllItems();
+        showFlightsButton.addItem("Select Flight");  // Item por defecto
+
+        for (Flight f : flightRepository.getAllFlights()) {
+            String info = f.getId() + " (" + f.getDepartureLocation().getAirportID() + " ➔ " + f.getArrivalLocation().getAirportID() + ")";
+            showFlightsButton.addItem(info);
+        }
+
+        System.out.println("DEBUG - Vuelos cargados: " + showFlightsButton.getItemCount());
+    }
+
+    private void updateMyFlightsTable(String passengerId) throws IOException, Exception {
+        DefaultTableModel model = flightRepository.updateMyFlightsTable(passengerId);
+        tableMyFlights.setModel(model);
+    }
+
+    private void onUpdateUser() {
+        String selectedId = (String) userSelect.getSelectedItem();
+        if (selectedId == null || selectedId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario.");
+            return;
+        }
+
+        String newFirstName = fieldFirstNameUpdate.getText();
+        String newLastName = fieldLastNameUpdate.getText();
+        String newCountry = fieldCountryUpdate.getText();
+        String newPhoneCode = fieldPrefixUpdate.getText();
+        String newPhone = fieldPhoneUpdate.getText();
+        String newYear = fieldYearUpdate.getText();
+        String newMonth = (String) monthUpdate.getSelectedItem();
+        String newDay = (String) dayUpdate.getSelectedItem();
+
+        passengerRepository.updatePassenger(
+                selectedId, newFirstName, newLastName, newYear, newMonth, newDay, newPhoneCode, newPhone, newCountry
+        );
+
+        JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
+    }
+    
     private void updatePlaneTable() {
-    DefaultTableModel planeModel = (DefaultTableModel) tablePlanes.getModel();
-    planeModel.setRowCount(0);
-
-    for (Plane p : planeRepository.getAllPlanes()) {
-        planeModel.addRow(new Object[]{
-            p.getId(),
-            p.getBrand(),
-            p.getModel(),
-            p.getMaxCapacity(),
-            p.getAirline()
-        });
+        tablePlanes = planeRepository.getPassengerRowsR();
+        viewAllPlanes.setViewportView(tablePlanes);
     }
-}
-  private void cargarVuelosEnComboBox() {
-    showFlightsButton.removeAllItems();
-    showFlightsButton.addItem("Select Flight");  // Item por defecto
-
-    for (Flight f : flightRepository.getAllFlights()) {
-        String info = f.getId() + " (" + f.getDepartureLocation().getAirportID() + " ➔ " + f.getArrivalLocation().getAirportID() + ")";
-        showFlightsButton.addItem(info);
-    }
-
-    System.out.println("DEBUG - Vuelos cargados: " + showFlightsButton.getItemCount());
-}
-
-
-    
-private void updateMyFlightsTable(String passengerId) throws IOException {
-    DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
-    model.setRowCount(0);  // Limpiar tabla
-
-    List<Flight> flights = flightRepository.getFlightsByPassenger(passengerId);
-
-    for (Flight f : flights) {
-        LocalDateTime departureDateTime = f.getSchedule().getDepartureDate();
-        LocalDateTime arrivalDateTime = departureDateTime
-            .plusHours(f.getHoursDurationArrival())
-            .plusMinutes(f.getMinutesDurationArrival());
-
-        model.addRow(new Object[]{
-            f.getId(),
-            departureDateTime.toString(),
-            arrivalDateTime.toString()
-        });
-    }
-}
-private void onUpdateUser() {
-    String selectedId = (String) userSelect.getSelectedItem();
-    if (selectedId == null || selectedId.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario.");
-        return;
-    }
-
-    String newFirstName = fieldFirstNameUpdate.getText();
-    String newLastName = fieldLastNameUpdate.getText();
-    String newCountry = fieldCountryUpdate.getText();
-    String newPhoneCode = fieldPrefixUpdate.getText();
-    String newPhone = fieldPhoneUpdate.getText();
-    String newYear = fieldYearUpdate.getText();
-    String newMonth = (String) monthUpdate.getSelectedItem();
-    String newDay = (String) dayUpdate.getSelectedItem();
-
-
-
-    passengerRepository.updatePassenger(
-        selectedId, newFirstName, newLastName, newYear, newMonth, newDay, newPhoneCode, newPhone, newCountry
-    );
-
-    JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
-}
-
 
     private void updateFlightTable() {
-        DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
-        model.setRowCount(0); // Limpiar tabla
-
-        for (Flight flight : flightRepository.getAllFlights()) {
-            String scaleAirportID = "-";
-            if (flight.getScaleLocation() != null) {
-                scaleAirportID = flight.getScaleLocation().getAirportID();
-            }
-
-            model.addRow(new Object[]{
-                flight.getId(),
-                flight.getDepartureLocation().getAirportID(),
-                flight.getArrivalLocation().getAirportID(),
-                scaleAirportID,
-                flight.getSchedule().getDepartureDate().toString(),
-                flight.getHoursDurationArrival(),
-                flight.getMinutesDurationArrival(),
-                flight.getHoursDurationScale(),
-                flight.getMinutesDurationScale()
-            });
-        }
+        tableAllFlights = passengerRepository.getPassengerRowsR();
+        viewAllFlights.setViewportView(tablePassengers);
     }
- 
+    private void updateLocationTable() {
+        tableLocations = locationRepository.getLocationRowsR();
+        viewAllLocations.setViewportView(tableLocations);
+    }
 
-
-
-
+    private void updatePassengerTable() {
+        tablePassengers = passengerRepository.getPassengerRowsR();
+        viewPassengers.setViewportView(tablePassengers);
+    }
 
     private void cargarIDsEnComboBox() {
-       userSelect.removeAllItems();
+        userSelect.removeAllItems();
         userSelect.addItem("Select User");  // Agregar el primer ítem por defecto (opcional)
         for (Passenger p : passengerRepository.getAllPassengers()) {
             userSelect.addItem(String.valueOf(p.getId()));
@@ -200,35 +162,8 @@ private void onUpdateUser() {
 
     }
 
-private void updateLocationTable() {
-    DefaultTableModel locationModel = (DefaultTableModel) tableLocations.getModel();
-    locationModel.setRowCount(0);
+   
 
-    for (Location l : locationRepository.getAllLocations()) {
-        locationModel.addRow(new Object[]{
-            l.getAirportID(),
-            l.getAirportName(),
-            l.getAirportCity(),
-            l.getAirportCountry(),
-            l.getAirportLatitude(),
-            l.getAirportLongitude()
-        });
-    }
-}
-
-
-
-    
-     private void updatePassengerTable() {
-           DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
-    model.setRowCount(0);
-
-    for (Passenger p : passengerRepository.getAllPassengers()) {
-        model.addRow(new Object[]{
-            p.getId(), p.getFullname(), p.getBirthDate(), p.getAge(), p.getFullPhone(), p.getCountry(), p.getNumberFlights()
-        });
-    }
-    }
     private void blockPanels() {
         //9, 11
         for (int i = 1; i < views.getTabCount(); i++) {
@@ -1626,21 +1561,21 @@ private void updateLocationTable() {
     }//GEN-LAST:event_userActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-    String idText = fieldIDpassenger.getText();
-    String firstname = fieldFirstName.getText();
-    String lastname = fieldLastName.getText();
-    String yearText = fieldYear.getText();
-    String monthText = monthPassengerR.getSelectedItem().toString();
-    String dayText = dayPassengerR.getSelectedItem().toString();
-    String phoneCodeText = fieldPreFix.getText();
-    String phoneText = fieldPhone.getText();
-    String country = fieldCountry.getText();
+        String idText = fieldIDpassenger.getText();
+        String firstname = fieldFirstName.getText();
+        String lastname = fieldLastName.getText();
+        String yearText = fieldYear.getText();
+        String monthText = monthPassengerR.getSelectedItem().toString();
+        String dayText = dayPassengerR.getSelectedItem().toString();
+        String phoneCodeText = fieldPreFix.getText();
+        String phoneText = fieldPhone.getText();
+        String country = fieldCountry.getText();
 
-    passengerRepository.createPassengerFromRawData(
-        idText, firstname, lastname, yearText, monthText, dayText, phoneCodeText, phoneText, country
-    );
+        passengerRepository.createPassengerFromRawData(
+                idText, firstname, lastname, yearText, monthText, dayText, phoneCodeText, phoneText, country
+        );
         this.userSelect.addItem("" + idText);
-        
+
 
     }//GEN-LAST:event_btRegisterActionPerformed
 
@@ -1687,39 +1622,39 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btCreateFlightActionPerformed
 
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
-        onUpdateUser();                                      
-   
+        onUpdateUser();
+
     }//GEN-LAST:event_btUpdateActionPerformed
 
     private void btAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddFlightActionPerformed
-         
+
         try {
-        String passengerID = fieldIDaddTFlight.getText();
-        String flightID = showFlightsButton.getSelectedItem().toString();
+            String passengerID = fieldIDaddTFlight.getText();
+            String flightID = showFlightsButton.getSelectedItem().toString();
 
-        if (passengerID == null || passengerID.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un pasajero.");
-            return;
+            if (passengerID == null || passengerID.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona un pasajero.");
+                return;
+            }
+
+            if (flightID == null || flightID.equals("Flight")) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona un vuelo válido.");
+                return;
+            }
+
+            // Llamada al repositorio/controlador (solo pasando IDs)
+            Passenger passenger = passengerRepository.getPassengerById(passengerID);
+            String flightId = flightRepository.extractFlightID(flightID);
+            flightRepository.addPassengerToFlight(flightId, passenger);
+
+            JOptionPane.showMessageDialog(this, "Pasajero agregado correctamente al vuelo.");
+            updatePassengerTable();
+            updateFlightTable();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al agregar pasajero al vuelo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        if (flightID == null || flightID.equals("Flight")) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un vuelo válido.");
-            return;
-        }
-
-        // Llamada al repositorio/controlador (solo pasando IDs)
-        Passenger passenger = passengerRepository.getPassengerById(passengerID);
-        String flightId = flightRepository.extractFlightID(flightID);
-        flightRepository.addPassengerToFlight(flightId, passenger);
-
-        JOptionPane.showMessageDialog(this, "Pasajero agregado correctamente al vuelo.");
-        updatePassengerTable();
-        updateFlightTable();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error al agregar pasajero al vuelo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_btAddFlightActionPerformed
 
     private void btDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelayActionPerformed
@@ -1727,26 +1662,26 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btDelayActionPerformed
 
     private void btRefreshMyFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshMyFlightsActionPerformed
-     try {
-        String id = userSelect.getSelectedItem().toString();
-        if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
-            fieldIDupdate.setText(id);
-            fieldIDaddTFlight.setText(id);
+        try {
+            String id = userSelect.getSelectedItem().toString();
+            if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
+                fieldIDupdate.setText(id);
+                fieldIDaddTFlight.setText(id);
 
-            // Actualizar la tabla de "Show my flights"
-            updateMyFlightsTable(id);
-        } else {
-            // Si es "Select User", limpiar campos y tabla
-            fieldIDupdate.setText("");
-            fieldIDaddTFlight.setText("");
+                // Actualizar la tabla de "Show my flights"
+                updateMyFlightsTable(id);
+            } else {
+                // Si es "Select User", limpiar campos y tabla
+                fieldIDupdate.setText("");
+                fieldIDaddTFlight.setText("");
 
-            DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
-            model.setRowCount(0);
+                DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+                model.setRowCount(0);
+            }
+        } catch (Exception e) {
+            // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
         }
-    } catch (Exception e) {
-        // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
-    }
-        
+
     }//GEN-LAST:event_btRefreshMyFlightsActionPerformed
 
     private void btRefreshPassengersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshPassengersActionPerformed
@@ -1759,12 +1694,21 @@ private void updateLocationTable() {
     }//GEN-LAST:event_btRefreshPassengersActionPerformed
 
     private void refreshAllFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshAllFlightsActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) tableAllFlights.getModel();
-        model.setRowCount(0);
-        for (Flight flight : this.flights) {
-
+        try {
+            // TODO add your handling code here:
+            JTable table= flightRepository.onRefreshAllFlights();
+            viewAllFlights.setViewportView(table);
+           refreshAllFlights.addActionListener(e->{
+                try {
+                    flightRepository.onRefreshAllFlights();
+                } catch (IOException ex) {
+                    Logger.getLogger(AirportFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        } catch (IOException ex) {
+            Logger.getLogger(AirportFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }//GEN-LAST:event_refreshAllFlightsActionPerformed
 
     private void btRefreshAllPlanesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRefreshAllPlanesActionPerformed
@@ -1790,46 +1734,46 @@ private void updateLocationTable() {
     }//GEN-LAST:event_exitActionPerformed
 
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
-                                        
-    try {
-        String id = userSelect.getSelectedItem().toString();
-        if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
-            fieldIDupdate.setText(id);
-            fieldIDaddTFlight.setText(id);
 
-        } else {
-            // Si es "Select User", limpiar campos y tabla
-            fieldIDupdate.setText("");
-            fieldIDaddTFlight.setText("");
+        try {
+            String id = userSelect.getSelectedItem().toString();
+            if (!id.equals(userSelect.getItemAt(0))) {  // Si no es "Select User"
+                fieldIDupdate.setText(id);
+                fieldIDaddTFlight.setText(id);
 
-            DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
-            model.setRowCount(0);
+            } else {
+                // Si es "Select User", limpiar campos y tabla
+                fieldIDupdate.setText("");
+                fieldIDaddTFlight.setText("");
+
+                DefaultTableModel model = (DefaultTableModel) tableMyFlights.getModel();
+                model.setRowCount(0);
+            }
+        } catch (Exception e) {
+            // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
         }
-    } catch (Exception e) {
-        // En caso de error (por ejemplo, no se puede parsear el ID), puedes loguear o ignorar.
-    }
 
     }//GEN-LAST:event_userSelectActionPerformed
 
     private void showFlightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showFlightsButtonActionPerformed
-    try {
-        String selected = showFlightsButton.getSelectedItem().toString();
+        try {
+            String selected = showFlightsButton.getSelectedItem().toString();
 
-        if (!selected.equals("Select Flight")) { // Validar que no sea el item por defecto
-            System.out.println("Vuelo seleccionado: " + selected);
-            // Aquí puedes hacer lo que necesites con el vuelo seleccionado
-        } else {
-            System.out.println("Selecciona un vuelo válido");
+            if (!selected.equals("Select Flight")) { // Validar que no sea el item por defecto
+                System.out.println("Vuelo seleccionado: " + selected);
+                // Aquí puedes hacer lo que necesites con el vuelo seleccionado
+            } else {
+                System.out.println("Selecciona un vuelo válido");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
     }//GEN-LAST:event_showFlightsButtonActionPerformed
 
     private void fieldFirstNameUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldFirstNameUpdateActionPerformed
-        
+
     }//GEN-LAST:event_fieldFirstNameUpdateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

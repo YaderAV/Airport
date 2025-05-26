@@ -1,12 +1,12 @@
 package airport.Models.Storage;
 
+import airport.Models.Storage.DataLoaders.PassengerDataLoader;
 import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Location;
 import airport.Models.Entities.Passenger;
 import airport.Models.Entities.Plane;
 import airport.Models.Storage.DataLoaders.FlightDataLoader;
 import airport.Models.Storage.DataLoaders.LocationDataLoader;
-import airport.Models.Storage.DataLoaders.PassengerDataLoader;
 import airport.Models.Storage.DataLoaders.PlaneDataLoader;
 import java.io.IOException;
 import java.util.List;

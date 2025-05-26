@@ -9,9 +9,12 @@ import airport.Models.Entities.Passenger;
 import airport.controllers.FlightController;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
+import airport.controllers.utils.parser.Parsers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,7 +26,18 @@ public class FlightRepository extends ObservableBase {
     public FlightRepository(FlightController flightController) {
         this.flightController = flightController;
     }
-
+    public JTable onRefreshAllFlights() throws IOException{
+        Object[][] data = flightController.getFlightRows();
+        String [] headers = flightController.getHeaders();
+        JTable table =new JTable(data, headers);
+        return table;
+    }
+    
+public JTable getPassengerRowsR() throws IOException{
+        Object[][] data = flightController.getFlightRows();
+        String [] headers = flightController.getHeaders();
+        return new JTable(data, headers);
+    }
     public List<Flight> getAllFlights() {
         Response response = flightController.getAllFlights();
         if (response.getStatus() == Status.OK) {
@@ -67,7 +81,23 @@ public class FlightRepository extends ObservableBase {
         return   flightController.getFlightsByPassengerId(Long.parseLong(passengerID));
     }
   
-    
+    public DefaultTableModel updateMyFlightsTable(String passengerId)throws IOException, Exception{
+        Long id = Parsers.LONG.parse(passengerId);
+    List<Flight> flights = flightController.getFlightsByPassengerId(id);
+    String[] headers = {
+    "ID", "Departure Date", "Arrival Date"
+    };
+        DefaultTableModel model= new DefaultTableModel(headers,0);
+        
+        for(Flight f: flights){
+        model.addRow(new Object[]{
+        f.getId(),
+        f.getSchedule().getDepartureDate().toString(),
+        f.getSchedule().calculateArrival()
+        });
+        }
+        return model;
+    }
 }
 
 

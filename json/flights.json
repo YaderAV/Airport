@@ -2,7 +2,7 @@
     {
         "plane": "AB12345",
         "minutesDurationScale": 0,
-        "passengers": [1047042160],
+        "passengers": [],
         "departureLocation": "JFK",
         "scaleLocation": null,
         "minutesDurationArrival": 15,
@@ -41,7 +41,7 @@
     {
         "plane": "GH44556",
         "minutesDurationScale": 0,
-        "passengers": [],
+        "passengers": [1233],
         "departureLocation": "SYD",
         "scaleLocation": null,
         "minutesDurationArrival": 0,

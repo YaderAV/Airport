@@ -4,14 +4,17 @@
  */
 package airport.controllers;
 
+import airport.Models.Entities.PassengerTableModelAdapter;
 import airport.Models.Entities.Plane;
-import airport.Models.Observable.ObservableBase;
+import airport.Models.Entities.PlaneTableModelAdapter;
+import airport.Models.Observable.PlaneRepository;
 import airport.Models.Storage.JSONStorage;
 import airport.controllers.service.PlaneRegistrationService;
 import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import airport.controllers.utils.parser.PlaneDataParser;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +49,19 @@ public class PlaneController {
         }
     }
 
+   public Object[][] getPassengerRows() {
+        PlaneController pc = new PlaneController(planes, storage);
+        PlaneRepository pr = new PlaneRepository(pc);
+        List<Plane> planes = (List<Plane>) pr.getAllPlanes();
+        Object [][] rows = new Object[planes.size()][];
+        for(int i= 0; i<planes.size(); i++){
+            rows[i] = PlaneTableModelAdapter.toRow(planes.get(i));
+        }
+        return rows;
+    }
+    public String[] getHeaders(){
+        return PassengerTableModelAdapter.getColimHeader();
+    }
    public Response getAllPlanes() {
     return new Response("Lista de aviones obtenida.", 200, new ArrayList<>(planes.values()));
 }
