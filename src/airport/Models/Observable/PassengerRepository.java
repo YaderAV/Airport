@@ -66,7 +66,20 @@ public Iterable<Passenger> getAllPassengers() {
         return new ArrayList<>();
     }
 }
+    public Passenger getPassengerById(String passengerIdStr) {
+       long passengerId = Long.parseLong(passengerIdStr);
+       Response response = controller.getPassengerById(passengerId);
+
+       if (response.getStatus() == Status.OK) {
+           return (Passenger) response.getData();
+       } else {
+           System.err.println("Error al obtener pasajero: " + response.getMessage());
+           return null;
+       }
+   }
+
+    }
 
 
 
-}
+

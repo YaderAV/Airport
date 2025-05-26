@@ -4,6 +4,7 @@
  */
 package airport.controllers;
 
+import airport.Models.Entities.Flights.Flight;
 import airport.Models.Entities.Passenger;
 import airport.Models.Observable.ObservableBase;
 import airport.controllers.service.PassengerRegistrationService;
@@ -14,6 +15,9 @@ import airport.controllers.utils.Response;
 import airport.controllers.utils.Status;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,10 +28,12 @@ public class PassengerController  {
 
     private final Map<Long, Passenger> passengers;
     private final JSONStorage storage;
+    private Iterable<Flight> flights;
 
-    public PassengerController(Map<Long, Passenger> passengers, JSONStorage storage) {
+    public PassengerController(Map<Long, Passenger> passengers, JSONStorage storage,Iterable<Flight> flights) {
         this.passengers = passengers;
         this.storage = storage;
+        this.flights = flights;
     }
 
     public Response registerPassenger( 
@@ -72,6 +78,8 @@ public class PassengerController  {
         return new Response("Pasajero encontrado", Status.OK, p);
     }
 
+
+
 public Response getAllPassengers() {
     var sortedList = passengers.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
@@ -81,6 +89,7 @@ public Response getAllPassengers() {
     System.out.println("DEBUG - PassengerController.getAllPassengers() -> sortedList: " + sortedList);
     return new Response("Lista de pasajeros obtenida.", Status.OK, sortedList);
 }
+
 
 
 }
