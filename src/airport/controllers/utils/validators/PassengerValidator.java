@@ -30,6 +30,7 @@ public class PassengerValidator implements Validator<Passenger> {
         if (p.getFirstname() == null || p.getFirstname().isBlank()) result.addError("Nombre vacío.");
         if (p.getLastname() == null || p.getLastname().isBlank()) result.addError("Apellido vacío.");
         if (p.getBirthDate() == null || p.getBirthDate().isAfter(LocalDate.now())) result.addError("Fecha de nacimiento inválida.");
+        if(ValidatorDates.isValidBirthDate(p.getBirthDate())); result.addError("Fecha de nacimiento inválida");
         if (p.getPhone() <= 0 || String.valueOf(p.getPhone()).length() > 11) result.addError("Teléfono inválido. Máximo 11 dígitos.");
         if (p.getCountryPhoneCode() <= 0 || String.valueOf(p.getCountryPhoneCode()).length() > 3) result.addError("Código telefónico inválido. Máximo 3 dígitos y mayor que 0.");
         if (p.getCountry() == null || p.getCountry().isBlank()) result.addError("País vacío.");

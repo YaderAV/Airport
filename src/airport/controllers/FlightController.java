@@ -85,7 +85,7 @@ public class FlightController {
     public List<Flight> getFlightsByPassengerId(long passengerId) {
         List<Flight> passengerFlights = new ArrayList<>();
         for (Flight flight : flights) { 
-           for (Passenger p : flight.getPassengerList().getPassenger()) {
+           for (Passenger p : flight.getPassengerList().getPassengers()) {
                 if (p.getId() == passengerId) {
                     passengerFlights.add(flight);
                     break;
